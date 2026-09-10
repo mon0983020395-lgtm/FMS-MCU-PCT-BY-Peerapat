@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "setup": "tsx scripts/setup.ts",
+    "setup": "tsx --conditions react-server scripts/setup.ts",
     "dev": "next dev -p 3010",
     "build": "next build",
     "start": "next start",
@@ -20,8 +20,8 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "db:migrate:dev": "prisma migrate dev",
-    "db:seed": "tsx prisma/seed.ts",
-    "db:bootstrap": "tsx prisma/bootstrap.ts",
+    "db:seed": "tsx --conditions react-server prisma/seed.ts",
+    "db:bootstrap": "tsx --conditions react-server prisma/bootstrap.ts",
     "sync:liyon": "tsx scripts/sync-liyon-theme.ts",
     "postinstall": "prisma generate"
   },
@@ -69,5 +69,8 @@
     "tsx": "4.21.0",
     "typescript": "5.9.3",
     "vitest": "4.1.0"
+  },
+  "prisma": {
+    "seed": "tsx --conditions react-server prisma/seed.ts"
   }
 }

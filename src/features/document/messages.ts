@@ -1,0 +1,25 @@
+import type { Dictionary } from "@/shared/lib/i18n/translate";
+
+export const MESSAGES: Dictionary = {
+  "document.nav": { th: "จัดการเอกสาร", en: "Documents" },
+  "document.title": { th: "ระบบคำร้องเอกสาร", en: "Document Requests" },
+  "document.subtitle": { th: "จัดการและอนุมัติคำร้องเอกสารต่างๆ", en: "Manage and approve document requests" },
+  "document.create": { th: "สร้างคำร้อง", en: "New Request" },
+  "document.edit": { th: "แก้ไขคำร้อง", en: "Edit Request" },
+  "document.delete": { th: "ลบคำร้อง", en: "Delete Request" },
+  "document.approve": { th: "อนุมัติ", en: "Approve" },
+  "document.reject": { th: "ปฏิเสธ", en: "Reject" },
+  "document.docTypeField": { th: "ประเภทเอกสาร", en: "Document Type" },
+  "document.titleField": { th: "หัวข้อ", en: "Title" },
+  "document.statusField": { th: "สถานะ", en: "Status" },
+  "document.remarksField": { th: "หมายเหตุ", en: "Remarks" },
+  "document.empty": { th: "ไม่มีคำร้อง", en: "No document requests" },
+  "document.createSuccess": { th: "สร้างคำร้องแล้ว", en: "Request created successfully" },
+  "document.updateSuccess": { th: "อัปเดตคำร้องแล้ว", en: "Request updated successfully" },
+  "document.deleteSuccess": { th: "ลบคำร้องแล้ว", en: "Request deleted successfully" },
+  "document.deleteConfirm": { th: "คุณต้องการลบคำร้องนี้ใช่หรือไม่?", en: "Are you sure you want to delete this request?" },
+  "roles.module.document": { th: "ระบบเอกสาร", en: "Document Module" },
+  "perm.document:read": { th: "ดูคำร้องเอกสาร", en: "View documents" },
+  "perm.document:manage": { th: "จัดการคำร้องเอกสาร", en: "Manage documents" },
+  "perm.document:approve": { th: "อนุมัติเอกสาร", en: "Approve documents" },
+};

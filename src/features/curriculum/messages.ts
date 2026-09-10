@@ -1,0 +1,25 @@
+import type { Dictionary } from "@/shared/lib/i18n/translate";
+
+export const MESSAGES: Dictionary = {
+  "curriculum.nav": { th: "จัดการหลักสูตร", en: "Curriculums" },
+  "curriculum.title": { th: "จัดการหลักสูตร", en: "Curriculum Management" },
+  "curriculum.subtitle": { th: "เพิ่ม แก้ไข หรือลบข้อมูลหลักสูตรที่เปิดสอน", en: "Manage offered curriculums and degrees" },
+  "curriculum.create": { th: "เพิ่มหลักสูตร", en: "Add Curriculum" },
+  "curriculum.edit": { th: "แก้ไขหลักสูตร", en: "Edit Curriculum" },
+  "curriculum.delete": { th: "ลบหลักสูตร", en: "Delete Curriculum" },
+  "curriculum.codeField": { th: "รหัสหลักสูตร", en: "Code" },
+  "curriculum.nameThField": { th: "ชื่อหลักสูตร (ไทย)", en: "Name (TH)" },
+  "curriculum.nameEnField": { th: "ชื่อหลักสูตร (English)", en: "Name (EN)" },
+  "curriculum.degreeTypeField": { th: "ระดับปริญญา", en: "Degree Type" },
+  "curriculum.totalCreditsField": { th: "หน่วยกิตรวม", en: "Total Credits" },
+  "curriculum.descriptionField": { th: "รายละเอียด", en: "Description" },
+  "curriculum.statusField": { th: "สถานะ", en: "Status" },
+  "curriculum.empty": { th: "ยังไม่มีข้อมูลหลักสูตร", en: "No curriculums found" },
+  "curriculum.createSuccess": { th: "เพิ่มหลักสูตรแล้ว", en: "Curriculum created successfully" },
+  "curriculum.updateSuccess": { th: "บันทึกการแก้ไขแล้ว", en: "Curriculum updated successfully" },
+  "curriculum.deleteSuccess": { th: "ลบหลักสูตรแล้ว", en: "Curriculum deleted successfully" },
+  "curriculum.deleteConfirm": { th: "คุณต้องการลบข้อมูลหลักสูตรนี้ใช่หรือไม่?", en: "Are you sure you want to delete this curriculum?" },
+  "roles.module.curriculum": { th: "ระบบจัดการหลักสูตร", en: "Curriculum Module" },
+  "perm.curriculum:read": { th: "ดูข้อมูลหลักสูตร", en: "View curriculums" },
+  "perm.curriculum:manage": { th: "จัดการข้อมูลหลักสูตร", en: "Manage curriculums" },
+};

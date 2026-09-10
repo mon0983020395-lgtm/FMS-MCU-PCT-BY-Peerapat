@@ -1,6 +1,13 @@
 import { LayoutDashboard, Users, Settings, Layers, type LucideIcon } from "lucide-react";
 import { hasPermission, P } from "@/features/identity";
 import { SAMPLE_P } from "@/features/sample";
+import { NEWS_P } from "@/features/news/permissions";
+import { PERSONNEL_P } from "@/features/personnel/permissions";
+import { CURRICULUM_P } from "@/features/curriculum/permissions";
+import { DOCUMENT_P } from "@/features/document/permissions";
+import { BOOKING_P } from "@/features/booking/permissions";
+import { EBOOK_P } from "@/features/ebook/permissions";
+import { Newspaper, Users as UsersIcon, BookOpen, FileText, Calendar, Book } from "lucide-react";
 
 export interface NavItem {
   /** i18n key */
@@ -19,6 +26,30 @@ export const sidebarGroups: NavGroup[] = [
   {
     label: "nav.group.sample",
     items: [{ title: "sample.nav", href: "/sample", icon: Layers, permission: SAMPLE_P.sampleRead }],
+  },
+  {
+    label: "ข่าวสารประชาสัมพันธ์",
+    items: [{ title: "news.nav", href: "/news", icon: Newspaper, permission: NEWS_P.read }],
+  },
+  {
+    label: "บุคลากร",
+    items: [{ title: "personnel.nav", href: "/personnel", icon: UsersIcon, permission: PERSONNEL_P.read }],
+  },
+  {
+    label: "หลักสูตร",
+    items: [{ title: "curriculum.nav", href: "/curriculums", icon: BookOpen, permission: CURRICULUM_P.read }],
+  },
+  {
+    label: "เอกสาร",
+    items: [{ title: "document.nav", href: "/documents", icon: FileText, permission: DOCUMENT_P.read }],
+  },
+  {
+    label: "จองสถานที่",
+    items: [{ title: "booking.nav", href: "/bookings", icon: Calendar, permission: BOOKING_P.read }],
+  },
+  {
+    label: "E-Book",
+    items: [{ title: "ebook.nav", href: "/ebooks", icon: Book, permission: EBOOK_P.read }],
   },
   {
     label: "nav.group.users",

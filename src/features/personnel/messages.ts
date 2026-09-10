@@ -1,0 +1,26 @@
+import type { Dictionary } from "@/shared/lib/i18n/translate";
+
+export const MESSAGES: Dictionary = {
+  "personnel.nav": { th: "จัดการบุคลากร", en: "Personnel" },
+  "personnel.title": { th: "จัดการบุคลากร", en: "Personnel Management" },
+  "personnel.subtitle": { th: "เพิ่ม แก้ไข หรือลบข้อมูลบุคลากรในคณะ", en: "Manage faculty members and staff" },
+  "personnel.create": { th: "เพิ่มบุคลากร", en: "Add Personnel" },
+  "personnel.edit": { th: "แก้ไขบุคลากร", en: "Edit Personnel" },
+  "personnel.delete": { th: "ลบข้อมูลบุคลากร", en: "Delete Personnel" },
+  "personnel.nameField": { th: "ชื่อ-นามสกุล", en: "Name" },
+  "personnel.firstNameField": { th: "ชื่อ", en: "First Name" },
+  "personnel.lastNameField": { th: "นามสกุล", en: "Last Name" },
+  "personnel.positionField": { th: "ตำแหน่ง", en: "Position" },
+  "personnel.departmentField": { th: "ภาควิชา/ฝ่าย", en: "Department" },
+  "personnel.emailField": { th: "อีเมล", en: "Email" },
+  "personnel.phoneField": { th: "เบอร์โทรศัพท์", en: "Phone" },
+  "personnel.statusField": { th: "สถานะ", en: "Status" },
+  "personnel.empty": { th: "ยังไม่มีข้อมูลบุคลากร", en: "No personnel found" },
+  "personnel.createSuccess": { th: "เพิ่มบุคลากรแล้ว", en: "Personnel created successfully" },
+  "personnel.updateSuccess": { th: "บันทึกการแก้ไขแล้ว", en: "Personnel updated successfully" },
+  "personnel.deleteSuccess": { th: "ลบข้อมูลบุคลากรแล้ว", en: "Personnel deleted successfully" },
+  "personnel.deleteConfirm": { th: "คุณต้องการลบข้อมูลบุคลากรท่านนี้ใช่หรือไม่?", en: "Are you sure you want to delete this personnel?" },
+  "roles.module.personnel": { th: "ระบบจัดการบุคลากร", en: "Personnel Module" },
+  "perm.personnel:read": { th: "ดูข้อมูลบุคลากร", en: "View personnel" },
+  "perm.personnel:manage": { th: "จัดการข้อมูลบุคลากร", en: "Manage personnel" },
+};
