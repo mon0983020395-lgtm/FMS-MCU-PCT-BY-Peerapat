@@ -41,11 +41,9 @@ export function GuardHero({
   onExploreClick,
 }: GuardHeroProps) {
   const modalVideoRef = useRef<HTMLVideoElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const heroRef = useRef<HTMLDivElement | null>(null);
 
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
 
   // Handle Video Modal Open/Close
@@ -77,12 +75,11 @@ export function GuardHero({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isVideoModalOpen]);
 
-  // Mouse Move for Parallax and Spotlight (Smooth, gentle damping)
+  // Mouse Move for Parallax
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    setMousePos({ x, y });
 
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
@@ -93,86 +90,8 @@ export function GuardHero({
   };
 
   const handleMouseLeave = () => {
-    setMousePos({ x: -100, y: -100 });
     setParallaxOffset({ x: 0, y: 0 });
   };
-
-  // Interactive Particle Canvas with Dynamic Palette Color Reading
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let width = (canvas.width = canvas.offsetWidth);
-    let height = (canvas.height = canvas.offsetHeight);
-
-    const handleResize = () => {
-      if (!canvas) return;
-      width = canvas.width = canvas.offsetWidth;
-      height = canvas.height = canvas.offsetHeight;
-    };
-    window.addEventListener("resize", handleResize);
-
-    // Read active brand color from computed style
-    const getBrandColor = () => {
-      if (typeof window === "undefined") return { r: 5, g: 86, b: 202 };
-      const style = getComputedStyle(document.documentElement);
-      const brand = style.getPropertyValue("--brand").trim() || style.getPropertyValue("--primary").trim() || "#0556CA";
-
-      // Parse hex or rgb
-      if (brand.startsWith("#")) {
-        const hex = brand.replace("#", "");
-        if (hex.length === 6) {
-          return {
-            r: parseInt(hex.substring(0, 2), 16),
-            g: parseInt(hex.substring(2, 4), 16),
-            b: parseInt(hex.substring(4, 6), 16),
-          };
-        }
-      }
-      return { r: 61, g: 130, b: 232 };
-    };
-
-    const brandRgb = getBrandColor();
-
-    let spotlightX = width / 2;
-    let spotlightY = height / 2;
-
-    const render = () => {
-      ctx.clearRect(0, 0, width, height);
-
-      // Smooth, gentle ambient spotlight following cursor (subtle and calm)
-      if (mousePos.x > 0 && mousePos.y > 0) {
-        spotlightX += (mousePos.x - spotlightX) * 0.03;
-        spotlightY += (mousePos.y - spotlightY) * 0.03;
-
-        const radial = ctx.createRadialGradient(
-          spotlightX,
-          spotlightY,
-          10,
-          spotlightX,
-          spotlightY,
-          300
-        );
-        radial.addColorStop(0, `rgba(${brandRgb.r}, ${brandRgb.g}, ${brandRgb.b}, 0.12)`);
-        radial.addColorStop(0.5, `rgba(${brandRgb.r}, ${brandRgb.g}, ${brandRgb.b}, 0.03)`);
-        radial.addColorStop(1, "transparent");
-        ctx.fillStyle = radial;
-        ctx.fillRect(0, 0, width, height);
-      }
-
-      animId = requestAnimationFrame(render);
-    };
-
-    render();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [mousePos]);
 
   const scrollToCatalog = () => {
     if (onExploreClick) {
@@ -196,51 +115,27 @@ export function GuardHero({
         onMouseLeave={handleMouseLeave}
         className="relative w-full min-h-[92vh] lg:min-h-[96vh] flex flex-col justify-between overflow-hidden bg-[#070c14] text-white selection:bg-primary selection:text-primary-foreground"
       >
-        {/* Layer 1: Futuristic Open Book Background Visual with Floating Motion, Mouse Parallax & Dynamic Light Effects */}
+        {/* Layer 1: Futuristic Open Book Background Visual with Floating Motion & Mouse Parallax */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          {/* Main Book Visual with subtle futuristic floating motion */}
+          {/* Parallax Container */}
           <div
-            className="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-700 ease-out animate-float-futuristic"
+            className="absolute inset-0 w-full h-full transition-transform duration-700 ease-out"
             style={{
-              backgroundImage: `url(${BOOK_BG_IMAGE})`,
-              transform: `scale(1.04) translate(${parallaxOffset.x * -0.25}px, ${parallaxOffset.y * -0.25}px)`,
+              transform: `scale(1.05) translate(${parallaxOffset.x * -0.25}px, ${parallaxOffset.y * -0.25}px)`,
             }}
-          />
+          >
+            {/* Animated Floating Book Visual */}
+            <div
+              className="w-full h-full bg-cover bg-center animate-float-futuristic"
+              style={{
+                backgroundImage: `url(${BOOK_BG_IMAGE})`,
+              }}
+            />
+          </div>
 
-          {/* Layer 1.1: Multi-Layer Atmospheric Overlay for Cinematic Contrast */}
+          {/* Atmospheric Overlay for Cinematic Contrast */}
           <div className="absolute inset-0 guard-video-overlay pointer-events-none z-1" />
-
-          {/* Layer 1.2: Breathing Pulsing Holographic Core Aura Behind Book (Completely borderless & circular) */}
-          <div
-            className="absolute top-1/2 right-[10%] sm:right-[16%] lg:right-[22%] -translate-y-1/2 w-[550px] sm:w-[680px] h-[550px] sm:h-[680px] rounded-full pointer-events-none blur-[110px] opacity-75 animate-book-glow-breathe z-1"
-            style={{
-              background: "radial-gradient(circle, var(--brand-glow, rgba(61, 130, 232, 0.75)) 0%, var(--brand, rgba(5, 86, 202, 0.35)) 45%, transparent 72%)",
-            }}
-          />
-
-          {/* Layer 1.3: Moving Holographic Light Flare Wandering across Book Pages (Borderless circular glow) */}
-          <div
-            className="absolute top-1/2 right-[12%] sm:right-[18%] lg:right-[24%] -translate-y-1/2 w-[440px] sm:w-[520px] h-[440px] sm:h-[520px] rounded-full pointer-events-none blur-[90px] opacity-60 mix-blend-screen animate-book-light-shift z-1"
-            style={{
-              background: "radial-gradient(circle, var(--brand-light, #38bdf8) 0%, transparent 68%)",
-            }}
-          />
-
-          {/* Layer 1.4: Interactive Parallax Mouse Flare on Book Surface (Soft circular glow) */}
-          <div
-            className="absolute top-1/2 right-[14%] sm:right-[20%] lg:right-[24%] -translate-y-1/2 w-[360px] h-[360px] rounded-full pointer-events-none blur-[80px] opacity-35 mix-blend-screen transition-transform duration-500 ease-out z-1"
-            style={{
-              background: "radial-gradient(circle, var(--brand-light, #70b8ff) 0%, transparent 70%)",
-              transform: `translate(${parallaxOffset.x * 1.5}px, ${parallaxOffset.y * 1.5}px)`,
-            }}
-          />
         </div>
-
-        {/* Ambient Mouse Spotlight Canvas (Clean, zero particles/glyphs) */}
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 w-full h-full pointer-events-none z-2"
-        />
 
         {/* ─────────────────────────────────────────────────────────────
             MAIN HERO CONTENT CONTAINER

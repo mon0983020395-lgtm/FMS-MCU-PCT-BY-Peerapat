@@ -122,50 +122,14 @@
 
 @keyframes float-futuristic {
   0%, 100% {
-    transform: translateY(0) rotate(0deg);
+    transform: translateY(0px) rotate(0deg);
   }
   50% {
-    transform: translateY(-12px) rotate(0.8deg);
+    transform: translateY(-16px) rotate(0.6deg);
   }
 }
 
 .animate-float-futuristic {
   animation: float-futuristic 7s ease-in-out infinite;
-}
-
-@keyframes book-glow-breathe {
-  0%, 100% {
-    transform: scale(0.92);
-    opacity: 0.4;
-    filter: blur(100px);
-  }
-  50% {
-    transform: scale(1.22);
-    opacity: 0.8;
-    filter: blur(130px);
-  }
-}
-
-@keyframes book-light-shift {
-  0%, 100% {
-    transform: translate(0, 0) scale(0.95);
-    opacity: 0.45;
-  }
-  33% {
-    transform: translate(-40px, -25px) scale(1.18);
-    opacity: 0.8;
-  }
-  66% {
-    transform: translate(35px, 20px) scale(1.08);
-    opacity: 0.65;
-  }
-}
-
-.animate-book-glow-breathe {
-  animation: book-glow-breathe 5s ease-in-out infinite;
-}
-
-.animate-book-light-shift {
-  animation: book-light-shift 7s ease-in-out infinite;
 }
 
