@@ -133,59 +133,39 @@
   animation: float-futuristic 7s ease-in-out infinite;
 }
 
-@keyframes book-light-sweep {
-  0% {
-    transform: translateX(-140%) translateY(-30%) rotate(25deg);
-    opacity: 0;
-  }
-  25% {
-    opacity: 0.65;
-  }
-  50% {
-    opacity: 0.85;
-  }
-  75% {
-    opacity: 0.65;
-  }
-  100% {
-    transform: translateX(140%) translateY(30%) rotate(25deg);
-    opacity: 0;
-  }
-}
-
 @keyframes book-glow-breathe {
   0%, 100% {
-    transform: translateY(-50%) scale(0.92);
+    transform: scale(0.92);
     opacity: 0.4;
-    filter: blur(80px);
+    filter: blur(100px);
   }
   50% {
-    transform: translateY(-50%) scale(1.18);
+    transform: scale(1.22);
     opacity: 0.8;
-    filter: blur(105px);
+    filter: blur(130px);
   }
 }
 
-@keyframes hologram-shimmer {
+@keyframes book-light-shift {
   0%, 100% {
-    transform: translateY(-50%) scale(1);
-    opacity: 0.35;
+    transform: translate(0, 0) scale(0.95);
+    opacity: 0.45;
   }
-  50% {
-    transform: translateY(-52%) scale(1.08);
-    opacity: 0.7;
+  33% {
+    transform: translate(-40px, -25px) scale(1.18);
+    opacity: 0.8;
   }
-}
-
-.animate-book-light-sweep {
-  animation: book-light-sweep 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  66% {
+    transform: translate(35px, 20px) scale(1.08);
+    opacity: 0.65;
+  }
 }
 
 .animate-book-glow-breathe {
-  animation: book-glow-breathe 4.5s ease-in-out infinite;
+  animation: book-glow-breathe 5s ease-in-out infinite;
 }
 
-.animate-hologram-shimmer {
-  animation: hologram-shimmer 6s ease-in-out infinite;
+.animate-book-light-shift {
+  animation: book-light-shift 7s ease-in-out infinite;
 }
 

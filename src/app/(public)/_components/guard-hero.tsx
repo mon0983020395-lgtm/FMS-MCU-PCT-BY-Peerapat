@@ -210,32 +210,25 @@ export function GuardHero({
           {/* Layer 1.1: Multi-Layer Atmospheric Overlay for Cinematic Contrast */}
           <div className="absolute inset-0 guard-video-overlay pointer-events-none z-1" />
 
-          {/* Layer 1.2: Breathing Pulsing Holographic Core Aura Behind Book */}
+          {/* Layer 1.2: Breathing Pulsing Holographic Core Aura Behind Book (Completely borderless & circular) */}
           <div
-            className="absolute top-1/2 right-[12%] sm:right-[18%] lg:right-[24%] -translate-y-1/2 w-[520px] sm:w-[620px] h-[520px] sm:h-[620px] rounded-full pointer-events-none blur-[95px] opacity-70 animate-book-glow-breathe z-1"
+            className="absolute top-1/2 right-[10%] sm:right-[16%] lg:right-[22%] -translate-y-1/2 w-[550px] sm:w-[680px] h-[550px] sm:h-[680px] rounded-full pointer-events-none blur-[110px] opacity-75 animate-book-glow-breathe z-1"
             style={{
               background: "radial-gradient(circle, var(--brand-glow, rgba(61, 130, 232, 0.75)) 0%, var(--brand, rgba(5, 86, 202, 0.35)) 45%, transparent 72%)",
             }}
           />
 
-          {/* Layer 1.3: Hologram Shimmer Highlight Overlay across Book */}
+          {/* Layer 1.3: Moving Holographic Light Flare Wandering across Book Pages (Borderless circular glow) */}
           <div
-            className="absolute top-1/2 right-[10%] sm:right-[16%] lg:right-[20%] -translate-y-1/2 w-[600px] h-[440px] rounded-[50px] pointer-events-none opacity-50 mix-blend-color-dodge animate-hologram-shimmer z-1"
+            className="absolute top-1/2 right-[12%] sm:right-[18%] lg:right-[24%] -translate-y-1/2 w-[440px] sm:w-[520px] h-[440px] sm:h-[520px] rounded-full pointer-events-none blur-[90px] opacity-60 mix-blend-screen animate-book-light-shift z-1"
             style={{
-              background: "radial-gradient(ellipse at 48% 52%, var(--brand-light, #38bdf8) 0%, transparent 65%)",
+              background: "radial-gradient(circle, var(--brand-light, #38bdf8) 0%, transparent 68%)",
             }}
           />
 
-          {/* Layer 1.4: Dynamic Shifting Light Sweep Beam across Book Pages */}
-          <div className="absolute top-1/2 right-[8%] sm:right-[14%] lg:right-[18%] -translate-y-1/2 w-[650px] h-[480px] overflow-hidden pointer-events-none mix-blend-screen opacity-75 z-1">
-            <div
-              className="absolute -inset-full bg-gradient-to-r from-transparent via-[var(--brand-light,rgba(120,200,255,0.45))] to-transparent transform -rotate-12 animate-book-light-sweep"
-            />
-          </div>
-
-          {/* Layer 1.5: Interactive Parallax Mouse Flare on Book Surface */}
+          {/* Layer 1.4: Interactive Parallax Mouse Flare on Book Surface (Soft circular glow) */}
           <div
-            className="absolute top-1/2 right-[14%] sm:right-[20%] lg:right-[24%] -translate-y-1/2 w-[380px] h-[280px] rounded-full pointer-events-none blur-[60px] opacity-30 mix-blend-screen transition-transform duration-500 ease-out z-1"
+            className="absolute top-1/2 right-[14%] sm:right-[20%] lg:right-[24%] -translate-y-1/2 w-[360px] h-[360px] rounded-full pointer-events-none blur-[80px] opacity-35 mix-blend-screen transition-transform duration-500 ease-out z-1"
             style={{
               background: "radial-gradient(circle, var(--brand-light, #70b8ff) 0%, transparent 70%)",
               transform: `translate(${parallaxOffset.x * 1.5}px, ${parallaxOffset.y * 1.5}px)`,
