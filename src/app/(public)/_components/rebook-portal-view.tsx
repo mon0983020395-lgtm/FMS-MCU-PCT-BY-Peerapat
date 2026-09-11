@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +28,7 @@ import {
   BookCheck,
 } from "lucide-react";
 import type { TenantSettings } from "@/features/identity";
+import { AppleHeroBook } from "./apple-hero-book";
 
 export interface BookItem {
   id: string;
@@ -116,107 +117,27 @@ export function RebookPortalView({ settings, initialBooks, initialNews }: Rebook
     return initialBooks.find((b) => b.featured) || initialBooks[0];
   }, [initialBooks]);
 
+  const catalogRef = useRef<HTMLElement>(null);
+
+  const handleExploreClick = () => {
+    catalogRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSearchFromHero = (q: string) => {
+    setSearchQuery(q);
+    catalogRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div className="flex flex-col w-full bg-[#fbfbfa] dark:bg-background text-foreground transition-colors">
       
-      {/* 1. HERO SECTION (ReBook Editorial Minimalist Style) */}
-      <section className="relative overflow-hidden pt-12 pb-16 md:pt-20 md:pb-24 px-4 border-b border-border/40 bg-gradient-to-b from-primary/5 via-background to-background">
-        {/* Subtle decorative background circles */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none -z-10" />
-        <div className="absolute top-1/3 left-10 w-72 h-72 bg-amber-500/5 rounded-full blur-3xl pointer-events-none -z-10" />
-
-        <div className="container mx-auto max-w-5xl text-center space-y-6">
-          
-          {/* ReBook Eyebrow Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-semibold tracking-wide uppercase shadow-sm">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>REBOOK CURATION PLATFORM • {tenantName}</span>
-          </div>
-
-          {/* Main Headline */}
-          <div className="space-y-3">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-foreground leading-[1.15]">
-              คัดสรรความรู้ <span className="text-primary underline decoration-primary/30 decoration-wavy decoration-2">สู่การอ่าน</span> ที่เปี่ยมความหมาย
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground font-light max-w-2xl mx-auto">
-              Curated Academic Wisdom for Intentional & Lifelong Reading
-            </p>
-          </div>
-
-          <p className="text-sm md:text-base text-muted-foreground/90 max-w-2xl mx-auto leading-relaxed">
-            ศูนย์รวมคลังหนังสืออิเล็กทรอนิกส์ ตำราวิชาการ งานวิจัย และองค์ความรู้ที่ผ่านการคัดสรรโดยคณาจารย์ {tenantName} เพื่อให้นิสิตและผู้แสวงหาความรู้เข้าถึงได้ทุกที่ ทุกเวลา
-          </p>
-
-          {/* ReBook Signature Interactive Search Bar */}
-          <div className="pt-4 max-w-2xl mx-auto">
-            <div className="relative flex items-center bg-card border border-border/80 rounded-full shadow-lg p-1.5 focus-within:ring-2 focus-within:ring-primary/30 transition-all">
-              <div className="pl-4 text-muted-foreground">
-                <Search className="w-5 h-5 text-primary" />
-              </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="ค้นหาชื่อหนังสือ, ผู้แต่ง, คำสำคัญ, หรือหัวข้อวิชาการ..."
-                className="w-full bg-transparent px-3 py-2 text-sm md:text-base outline-none placeholder:text-muted-foreground/70"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="p-1.5 text-muted-foreground hover:text-foreground mr-1"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-              <Button size="sm" className="rounded-full px-5 font-medium shrink-0">
-                ค้นหา
-              </Button>
-            </div>
-          </div>
-
-          {/* Quick Category Chips Slider */}
-          <div className="flex items-center justify-center gap-2 overflow-x-auto py-2 px-1 max-w-4xl mx-auto scrollbar-none">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setSelectedCategory(cat)}
-                className={`text-xs md:text-sm px-3.5 py-1.5 rounded-full font-medium transition-all shrink-0 ${
-                  selectedCategory === cat
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-card border border-border/60 text-muted-foreground hover:text-foreground hover:border-border"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Curated Stats Row */}
-          <div className="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto text-left">
-            <div className="p-3.5 rounded-2xl bg-card/60 border border-border/50 backdrop-blur">
-              <div className="text-2xl font-bold text-foreground">1,200+</div>
-              <div className="text-xs text-muted-foreground">หนังสือและตำราในคลัง</div>
-            </div>
-            <div className="p-3.5 rounded-2xl bg-card/60 border border-border/50 backdrop-blur">
-              <div className="text-2xl font-bold text-primary flex items-center gap-1">
-                4.9 <Star className="w-4 h-4 fill-primary" />
-              </div>
-              <div className="text-xs text-muted-foreground">ดัชนีความพึงพอใจผู้อ่าน</div>
-            </div>
-            <div className="p-3.5 rounded-2xl bg-card/60 border border-border/50 backdrop-blur">
-              <div className="text-2xl font-bold text-foreground">100%</div>
-              <div className="text-xs text-muted-foreground">เปิดอ่านออนไลน์ฟรี 24 ชม.</div>
-            </div>
-            <div className="p-3.5 rounded-2xl bg-card/60 border border-border/50 backdrop-blur">
-              <div className="text-2xl font-bold text-foreground">6 คลังวิชา</div>
-              <div className="text-xs text-muted-foreground">ครอบคลุมทุกหมวดหมู่</div>
-            </div>
-          </div>
-
-        </div>
-      </section>
+      {/* 1. HERO SECTION: APPLE MACBOOK PRO INSPIRED 3D OPENING BOOK SHOWCASE */}
+      <AppleHeroBook
+        tenantName={tenantName}
+        tenantNameEn={tenantNameEn}
+        onExploreClick={handleExploreClick}
+        onSearchSubmit={handleSearchFromHero}
+      />
 
       {/* 2. CURATOR'S SPOTLIGHT / BOOK OF THE MONTH (ReBook Highlight Card) */}
       {spotlightBook && (
@@ -343,9 +264,55 @@ export function RebookPortalView({ settings, initialBooks, initialNews }: Rebook
       )}
 
       {/* 3. CURATED CATALOG / COLLECTION GRID */}
-      <section className="py-12 md:py-16 px-4 bg-background">
+      <section ref={catalogRef} className="py-12 md:py-16 px-4 bg-background scroll-mt-6">
         <div className="container mx-auto max-w-5xl space-y-8">
           
+          {/* In-Catalog Live Search & Category Chips */}
+          <div className="p-6 rounded-3xl bg-card border border-border/70 shadow-sm space-y-4">
+            <div className="relative flex items-center bg-background border border-border/80 rounded-full shadow-inner p-1.5 focus-within:ring-2 focus-within:ring-primary/30 transition-all">
+              <div className="pl-4 text-muted-foreground">
+                <Search className="w-4 h-4 text-primary" />
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="ค้นหาชื่อหนังสือ, ผู้แต่ง, คำสำคัญ, หรือหัวข้อวิชาการ..."
+                className="w-full bg-transparent px-3 py-1.5 text-sm md:text-base outline-none placeholder:text-muted-foreground/70"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="p-1.5 text-muted-foreground hover:text-foreground mr-1"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+              <Button size="sm" className="rounded-full px-5 font-medium shrink-0">
+                ค้นหา
+              </Button>
+            </div>
+
+            {/* Quick Category Chips */}
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`text-xs md:text-sm px-3.5 py-1.5 rounded-full font-medium transition-all shrink-0 ${
+                    selectedCategory === cat
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "bg-muted/50 border border-border/50 text-muted-foreground hover:text-foreground hover:border-border"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Section Header & Tab Controls */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border/50 pb-4">
             <div>
