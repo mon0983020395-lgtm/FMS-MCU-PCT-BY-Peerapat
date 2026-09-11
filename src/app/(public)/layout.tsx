@@ -3,6 +3,7 @@ import { resolveTenantSettings } from "@/features/identity/server";
 import { auth } from "@/features/identity/server";
 import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Mail, Facebook, MessageCircle, ExternalLink, BookOpen, Newspaper, Users, Home } from "lucide-react";
+import { PortalNavUser } from "./_components/portal-nav-user";
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const session = await auth().catch(() => null);
@@ -59,18 +60,7 @@ export default async function PublicLayout({ children }: { children: React.React
           </nav>
 
           <div className="flex items-center gap-3">
-            {session ? (
-              <Button asChild variant="outline" size="sm" className="gap-2">
-                <Link href="/dashboard">
-                  <span>แดชบอร์ด</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </Link>
-              </Button>
-            ) : (
-              <Button asChild size="sm">
-                <Link href="/login">เข้าสู่ระบบ</Link>
-              </Button>
-            )}
+            <PortalNavUser user={session?.user || null} />
           </div>
         </div>
       </header>
