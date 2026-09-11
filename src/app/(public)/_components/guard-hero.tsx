@@ -137,30 +137,16 @@ export function GuardHero({
 
     const brandRgb = getBrandColor();
 
-    // Futuristic Knowledge Data Particles (Slow, calm, ethereal floating)
-    const particleCount = 26;
-    const particles = Array.from({ length: particleCount }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      radius: Math.random() * 1.8 + 0.6,
-      speedX: (Math.random() - 0.5) * 0.08, // Very slow, gentle drift
-      speedY: -Math.random() * 0.1 - 0.05, // Slow, calm ascending motion
-      opacity: Math.random() * 0.6 + 0.15,
-      pulseSpeed: Math.random() * 0.012 + 0.004,
-      isGlyph: Math.random() > 0.75,
-      char: ["0", "1", "α", "β", "Ω", "∑", "λ", "✦", "◆"][Math.floor(Math.random() * 9)],
-    }));
-
     let spotlightX = width / 2;
     let spotlightY = height / 2;
 
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Smooth, slow gentle lerp to mouse position for ambient spotlight
+      // Smooth, gentle ambient spotlight following cursor (subtle and calm)
       if (mousePos.x > 0 && mousePos.y > 0) {
-        spotlightX += (mousePos.x - spotlightX) * 0.02;
-        spotlightY += (mousePos.y - spotlightY) * 0.02;
+        spotlightX += (mousePos.x - spotlightX) * 0.03;
+        spotlightY += (mousePos.y - spotlightY) * 0.03;
 
         const radial = ctx.createRadialGradient(
           spotlightX,
@@ -168,48 +154,14 @@ export function GuardHero({
           10,
           spotlightX,
           spotlightY,
-          280
+          300
         );
-        radial.addColorStop(0, `rgba(${brandRgb.r}, ${brandRgb.g}, ${brandRgb.b}, 0.15)`);
-        radial.addColorStop(0.5, `rgba(${brandRgb.r}, ${brandRgb.g}, ${brandRgb.b}, 0.04)`);
+        radial.addColorStop(0, `rgba(${brandRgb.r}, ${brandRgb.g}, ${brandRgb.b}, 0.12)`);
+        radial.addColorStop(0.5, `rgba(${brandRgb.r}, ${brandRgb.g}, ${brandRgb.b}, 0.03)`);
         radial.addColorStop(1, "transparent");
         ctx.fillStyle = radial;
         ctx.fillRect(0, 0, width, height);
       }
-
-      // Draw and update ascending data particles & holographic glyphs
-      particles.forEach((p) => {
-        p.x += p.speedX;
-        p.y += p.speedY;
-        p.opacity += Math.sin(Date.now() * p.pulseSpeed * 0.05) * 0.006;
-
-        // Wrap around vertically
-        if (p.y < -20) {
-          p.y = height + 20;
-          p.x = width * 0.35 + Math.random() * (width * 0.65); // Originating from right/book area
-        }
-        if (p.x < 0) p.x = width;
-        if (p.x > width) p.x = 0;
-
-        const currentOpacity = Math.max(0.15, Math.min(0.85, p.opacity));
-
-        if (p.isGlyph) {
-          ctx.font = "10px monospace";
-          ctx.fillStyle = `rgba(${brandRgb.r}, ${brandRgb.g}, ${brandRgb.b}, ${currentOpacity})`;
-          ctx.shadowColor = `rgba(${brandRgb.r}, ${brandRgb.g}, ${brandRgb.b}, 0.7)`;
-          ctx.shadowBlur = 8;
-          ctx.fillText(p.char, p.x, p.y);
-          ctx.shadowBlur = 0;
-        } else {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${brandRgb.r}, ${brandRgb.g}, ${brandRgb.b}, ${currentOpacity})`;
-          ctx.shadowColor = `rgba(${brandRgb.r}, ${brandRgb.g}, ${brandRgb.b}, 0.8)`;
-          ctx.shadowBlur = 6;
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        }
-      });
 
       animId = requestAnimationFrame(render);
     };
@@ -244,29 +196,54 @@ export function GuardHero({
         onMouseLeave={handleMouseLeave}
         className="relative w-full min-h-[92vh] lg:min-h-[96vh] flex flex-col justify-between overflow-hidden bg-[#070c14] text-white selection:bg-primary selection:text-primary-foreground"
       >
-        {/* Layer 1: Futuristic Open Book Background Visual with Slow Floating Animation & Mouse Parallax */}
+        {/* Layer 1: Futuristic Open Book Background Visual with Floating Motion, Mouse Parallax & Dynamic Light Effects */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          {/* Main Book Visual with subtle futuristic floating motion */}
           <div
-            className="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-700 ease-out"
+            className="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-700 ease-out animate-float-futuristic"
             style={{
               backgroundImage: `url(${BOOK_BG_IMAGE})`,
-              transform: `scale(1.03) translate(${parallaxOffset.x * -0.25}px, ${parallaxOffset.y * -0.25}px)`,
+              transform: `scale(1.04) translate(${parallaxOffset.x * -0.25}px, ${parallaxOffset.y * -0.25}px)`,
             }}
           />
 
-          {/* Layer 2: Multi-Layer Atmospheric Overlay for Cinematic Contrast */}
+          {/* Layer 1.1: Multi-Layer Atmospheric Overlay for Cinematic Contrast */}
           <div className="absolute inset-0 guard-video-overlay pointer-events-none z-1" />
 
-          {/* Layer 2.5: Ambient Brand Light Aura behind Book */}
+          {/* Layer 1.2: Breathing Pulsing Holographic Core Aura Behind Book */}
           <div
-            className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] rounded-full pointer-events-none blur-[120px] opacity-40"
+            className="absolute top-1/2 right-[12%] sm:right-[18%] lg:right-[24%] -translate-y-1/2 w-[520px] sm:w-[620px] h-[520px] sm:h-[620px] rounded-full pointer-events-none blur-[95px] opacity-70 animate-book-glow-breathe z-1"
             style={{
-              background: "radial-gradient(circle, var(--brand-glow, rgba(61, 130, 232, 0.6)) 0%, transparent 70%)",
+              background: "radial-gradient(circle, var(--brand-glow, rgba(61, 130, 232, 0.75)) 0%, var(--brand, rgba(5, 86, 202, 0.35)) 45%, transparent 72%)",
+            }}
+          />
+
+          {/* Layer 1.3: Hologram Shimmer Highlight Overlay across Book */}
+          <div
+            className="absolute top-1/2 right-[10%] sm:right-[16%] lg:right-[20%] -translate-y-1/2 w-[600px] h-[440px] rounded-[50px] pointer-events-none opacity-50 mix-blend-color-dodge animate-hologram-shimmer z-1"
+            style={{
+              background: "radial-gradient(ellipse at 48% 52%, var(--brand-light, #38bdf8) 0%, transparent 65%)",
+            }}
+          />
+
+          {/* Layer 1.4: Dynamic Shifting Light Sweep Beam across Book Pages */}
+          <div className="absolute top-1/2 right-[8%] sm:right-[14%] lg:right-[18%] -translate-y-1/2 w-[650px] h-[480px] overflow-hidden pointer-events-none mix-blend-screen opacity-75 z-1">
+            <div
+              className="absolute -inset-full bg-gradient-to-r from-transparent via-[var(--brand-light,rgba(120,200,255,0.45))] to-transparent transform -rotate-12 animate-book-light-sweep"
+            />
+          </div>
+
+          {/* Layer 1.5: Interactive Parallax Mouse Flare on Book Surface */}
+          <div
+            className="absolute top-1/2 right-[14%] sm:right-[20%] lg:right-[24%] -translate-y-1/2 w-[380px] h-[280px] rounded-full pointer-events-none blur-[60px] opacity-30 mix-blend-screen transition-transform duration-500 ease-out z-1"
+            style={{
+              background: "radial-gradient(circle, var(--brand-light, #70b8ff) 0%, transparent 70%)",
+              transform: `translate(${parallaxOffset.x * 1.5}px, ${parallaxOffset.y * 1.5}px)`,
             }}
           />
         </div>
 
-        {/* Layer 3: Ascending Futuristic Data Particles & Interactive Spotlight Canvas */}
+        {/* Ambient Mouse Spotlight Canvas (Clean, zero particles/glyphs) */}
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full pointer-events-none z-2"
