@@ -28,6 +28,8 @@ import {
   BookCheck,
 } from "lucide-react";
 import type { TenantSettings } from "@/features/identity";
+import { HeroMotionCanvas } from "./hero-motion-canvas";
+import { FloatingElements } from "./floating-elements";
 
 export interface BookItem {
   id: string;
@@ -86,6 +88,29 @@ export function RebookPortalView({ settings, initialBooks, initialNews }: Rebook
   const [selectedTab, setSelectedTab] = useState("all");
   const [activeBookModal, setActiveBookModal] = useState<BookItem | null>(null);
 
+  // Mouse tracking for interactive spotlight and parallax
+  const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
+  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+
+  const handleHeroMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    setMousePos({ x, y });
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    setMouseOffset({
+      x: ((x - centerX) / centerX) * 35,
+      y: ((y - centerY) / centerY) * 35,
+    });
+  };
+
+  const handleHeroMouseLeave = () => {
+    setMousePos({ x: -100, y: -100 });
+    setMouseOffset({ x: 0, y: 0 });
+  };
+
   const tenantName = settings?.nameTh || "วิทยาลัยสงฆ์พิจิตร";
   const tenantNameEn = settings?.nameEn || "Faculty Web Platform";
 
@@ -119,24 +144,40 @@ export function RebookPortalView({ settings, initialBooks, initialNews }: Rebook
   return (
     <div className="flex flex-col w-full bg-[#fbfbfa] dark:bg-background text-foreground transition-colors">
       
-      {/* 1. HERO SECTION (ReBook Editorial Minimalist Style) */}
-      <section className="relative overflow-hidden pt-12 pb-16 md:pt-20 md:pb-24 px-4 border-b border-border/40 bg-gradient-to-b from-primary/5 via-background to-background">
-        {/* Subtle decorative background circles */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none -z-10" />
-        <div className="absolute top-1/3 left-10 w-72 h-72 bg-amber-500/5 rounded-full blur-3xl pointer-events-none -z-10" />
+      {/* 1. HERO SECTION (ReBook Editorial Minimalist Style with Interactive Motion & Parallax) */}
+      <section
+        onMouseMove={handleHeroMouseMove}
+        onMouseLeave={handleHeroMouseLeave}
+        className="relative overflow-hidden pt-14 pb-18 md:pt-22 md:pb-26 px-4 border-b border-border/40 bg-gradient-to-b from-primary/10 via-background to-background"
+      >
+        {/* Layer 1: Interactive Fluid Motion Aurora Canvas */}
+        <HeroMotionCanvas mousePos={mousePos} />
 
-        <div className="container mx-auto max-w-5xl text-center space-y-6">
+        {/* Layer 2: Subtle Academic Geometric Grid Pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none -z-10 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)]" />
+
+        {/* Layer 3: Floating Literary Elements with Mouse Parallax */}
+        <FloatingElements mouseOffset={mouseOffset} />
+
+        <div className="container mx-auto max-w-5xl text-center space-y-6 relative z-10">
           
           {/* ReBook Eyebrow Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-semibold tracking-wide uppercase shadow-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-semibold tracking-wide uppercase shadow-sm backdrop-blur-xs transform hover:scale-105 transition-transform">
             <Sparkles className="w-3.5 h-3.5" />
             <span>REBOOK CURATION PLATFORM • {tenantName}</span>
           </div>
 
-          {/* Main Headline */}
+          {/* Main Headline with Shimmer Gradient Effect */}
           <div className="space-y-3">
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-foreground leading-[1.15]">
-              คัดสรรความรู้ <span className="text-primary underline decoration-primary/30 decoration-wavy decoration-2">สู่การอ่าน</span> ที่เปี่ยมความหมาย
+              คัดสรรความรู้{" "}
+              <span className="relative inline-block">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-rose-500 to-amber-500 animate-pulse [animation-duration:3s]">
+                  สู่การอ่าน
+                </span>
+                <span className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary via-rose-400 to-amber-400 rounded-full" />
+              </span>{" "}
+              ที่เปี่ยมความหมาย
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground font-light max-w-2xl mx-auto">
               Curated Academic Wisdom for Intentional & Lifelong Reading
@@ -147,11 +188,11 @@ export function RebookPortalView({ settings, initialBooks, initialNews }: Rebook
             ศูนย์รวมคลังหนังสืออิเล็กทรอนิกส์ ตำราวิชาการ งานวิจัย และองค์ความรู้ที่ผ่านการคัดสรรโดยคณาจารย์ {tenantName} เพื่อให้นิสิตและผู้แสวงหาความรู้เข้าถึงได้ทุกที่ ทุกเวลา
           </p>
 
-          {/* ReBook Signature Interactive Search Bar */}
+          {/* ReBook Signature Interactive Search Bar with Ambient Glow */}
           <div className="pt-4 max-w-2xl mx-auto">
-            <div className="relative flex items-center bg-card border border-border/80 rounded-full shadow-lg p-1.5 focus-within:ring-2 focus-within:ring-primary/30 transition-all">
-              <div className="pl-4 text-muted-foreground">
-                <Search className="w-5 h-5 text-primary" />
+            <div className="relative group flex items-center bg-card/90 backdrop-blur-md border border-border/80 rounded-full shadow-lg hover:shadow-xl hover:border-primary/50 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/15 transition-all duration-300 p-1.5">
+              <div className="pl-4 text-muted-foreground group-hover:text-primary transition-colors">
+                <Search className="w-5 h-5" />
               </div>
               <input
                 type="text"
@@ -164,28 +205,28 @@ export function RebookPortalView({ settings, initialBooks, initialNews }: Rebook
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="p-1.5 text-muted-foreground hover:text-foreground mr-1"
+                  className="p-1.5 text-muted-foreground hover:text-foreground mr-1 transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
               )}
-              <Button size="sm" className="rounded-full px-5 font-medium shrink-0">
+              <Button size="sm" className="rounded-full px-6 font-medium shrink-0 shadow-sm transition-transform hover:scale-105 active:scale-95">
                 ค้นหา
               </Button>
             </div>
           </div>
 
-          {/* Quick Category Chips Slider */}
+          {/* Quick Category Chips Slider with Micro-Hover Bounce */}
           <div className="flex items-center justify-center gap-2 overflow-x-auto py-2 px-1 max-w-4xl mx-auto scrollbar-none">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 type="button"
                 onClick={() => setSelectedCategory(cat)}
-                className={`text-xs md:text-sm px-3.5 py-1.5 rounded-full font-medium transition-all shrink-0 ${
+                className={`text-xs md:text-sm px-4 py-1.5 rounded-full font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 shrink-0 shadow-xs ${
                   selectedCategory === cat
                     ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-card border border-border/60 text-muted-foreground hover:text-foreground hover:border-border"
+                    : "bg-card/90 backdrop-blur-sm border border-border/60 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-card"
                 }`}
               >
                 {cat}
@@ -193,25 +234,25 @@ export function RebookPortalView({ settings, initialBooks, initialNews }: Rebook
             ))}
           </div>
 
-          {/* Curated Stats Row */}
+          {/* Curated Stats Row with 3D Hover Tilt & Gradient Border Glow */}
           <div className="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto text-left">
-            <div className="p-3.5 rounded-2xl bg-card/60 border border-border/50 backdrop-blur">
-              <div className="text-2xl font-bold text-foreground">1,200+</div>
-              <div className="text-xs text-muted-foreground">หนังสือและตำราในคลัง</div>
+            <div className="group p-4 rounded-2xl bg-card/85 border border-border/60 hover:border-primary/50 shadow-sm hover:shadow-md backdrop-blur-md transition-all duration-300 transform hover:-translate-y-1">
+              <div className="text-2xl font-extrabold text-foreground group-hover:text-primary transition-colors">1,200+</div>
+              <div className="text-xs text-muted-foreground mt-0.5">หนังสือและตำราในคลัง</div>
             </div>
-            <div className="p-3.5 rounded-2xl bg-card/60 border border-border/50 backdrop-blur">
-              <div className="text-2xl font-bold text-primary flex items-center gap-1">
+            <div className="group p-4 rounded-2xl bg-card/85 border border-border/60 hover:border-primary/50 shadow-sm hover:shadow-md backdrop-blur-md transition-all duration-300 transform hover:-translate-y-1">
+              <div className="text-2xl font-extrabold text-primary flex items-center gap-1 group-hover:scale-105 origin-left transition-transform">
                 4.9 <Star className="w-4 h-4 fill-primary" />
               </div>
-              <div className="text-xs text-muted-foreground">ดัชนีความพึงพอใจผู้อ่าน</div>
+              <div className="text-xs text-muted-foreground mt-0.5">ดัชนีความพึงพอใจผู้อ่าน</div>
             </div>
-            <div className="p-3.5 rounded-2xl bg-card/60 border border-border/50 backdrop-blur">
-              <div className="text-2xl font-bold text-foreground">100%</div>
-              <div className="text-xs text-muted-foreground">เปิดอ่านออนไลน์ฟรี 24 ชม.</div>
+            <div className="group p-4 rounded-2xl bg-card/85 border border-border/60 hover:border-primary/50 shadow-sm hover:shadow-md backdrop-blur-md transition-all duration-300 transform hover:-translate-y-1">
+              <div className="text-2xl font-extrabold text-foreground group-hover:text-primary transition-colors">100%</div>
+              <div className="text-xs text-muted-foreground mt-0.5">เปิดอ่านออนไลน์ฟรี 24 ชม.</div>
             </div>
-            <div className="p-3.5 rounded-2xl bg-card/60 border border-border/50 backdrop-blur">
-              <div className="text-2xl font-bold text-foreground">6 คลังวิชา</div>
-              <div className="text-xs text-muted-foreground">ครอบคลุมทุกหมวดหมู่</div>
+            <div className="group p-4 rounded-2xl bg-card/85 border border-border/60 hover:border-primary/50 shadow-sm hover:shadow-md backdrop-blur-md transition-all duration-300 transform hover:-translate-y-1">
+              <div className="text-2xl font-extrabold text-foreground group-hover:text-primary transition-colors">6 คลังวิชา</div>
+              <div className="text-xs text-muted-foreground mt-0.5">ครอบคลุมทุกหมวดหมู่</div>
             </div>
           </div>
 
