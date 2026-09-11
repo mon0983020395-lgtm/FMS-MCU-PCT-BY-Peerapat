@@ -28,6 +28,7 @@ export interface AdminShellProps {
   brandTagline: string;
   brandHref: string;
   brandLogo?: string | null;
+  footerText?: string | null;
   /** ชื่อหน้าปัจจุบัน (`.tenant` ใน navbar) — ว่างได้ถ้าหาไม่เจอ (ไม่ fallback เป็นค่าปลอม) */
   /** breadcrumb บน navbar — ขั้นสุดท้ายเป็น span[aria-current=page] (h1 เป็นของหัวหน้าในเนื้อหา) ขั้นก่อนหน้าเป็นลิงก์ · ว่าง = ไม่แสดง */
   breadcrumb: Crumb[];
@@ -88,6 +89,7 @@ export function AdminShell({
   brandTagline,
   brandHref,
   brandLogo,
+  footerText,
   breadcrumb,
   breadcrumbLabel,
   roleLabel,
@@ -290,8 +292,13 @@ export function AdminShell({
       <div className="backdrop" aria-hidden="true" onClick={onCloseDrawer} />
 
       <div className="adm-body">
-        <main className="adm-main">
-          <div className="in">{children}</div>
+        <main className="adm-main flex flex-col justify-between">
+          <div className="in flex-1">{children}</div>
+          {footerText && (
+            <footer className="mt-auto py-4 px-6 text-center text-xs text-muted-foreground border-t border-border/40">
+              {footerText}
+            </footer>
+          )}
         </main>
       </div>
     </div>

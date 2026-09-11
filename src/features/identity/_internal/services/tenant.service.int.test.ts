@@ -26,6 +26,43 @@ describe("tenant.service", () => {
     const t = await prisma.tenant.findUniqueOrThrow({ where: { id: core.tenantId } });
     expect(t.settings).toMatchObject({ palette: "green", futureFeature: { foo: "bar" } });
   });
+
+  it("บันทึกและอ่านข้อมูล footer settings ได้ถูกต้อง", async () => {
+    const core = await seedCore(prisma, { tenantCode: "TF", nameTh: "วิทยาลัยสงฆ์พิจิตร", nameEn: "MCU PCT" });
+    const adminId = await seedUser(prisma, core.tenantId, { email: "admin@tf.t", name: "Admin", passwordHash: "x", roleIds: [core.roleIds.SUPER_ADMIN] });
+
+    await updateTenantSettings({
+      tenantId: core.tenantId,
+      actorId: adminId,
+      nameTh: "วิทยาลัยสงฆ์พิจิตร",
+      nameEn: "MCU PCT",
+      logoUrl: "/uploads/logo.png",
+      palette: "pink",
+      footerAbout: "มหาวิทยาลัยมหาจุฬาลงกรณราชวิทยาลัย วิทยาลัยสงฆ์พิจิตร",
+      footerAddress: "ตำบลบ้านบุ่ง อำเภอเมือง จังหวัดพิจิตร",
+      footerPhone: "056-612345",
+      footerEmail: "contact@mcupct.ac.th",
+      footerFacebook: "https://facebook.com/mcupct",
+      footerLine: "@mcupct",
+      footerCopyright: "© 2026 MCU PCT",
+    });
+
+    const s = await getTenantSettings(core.tenantId);
+    expect(s).toMatchObject({
+      code: "TF",
+      nameTh: "วิทยาลัยสงฆ์พิจิตร",
+      nameEn: "MCU PCT",
+      logoUrl: "/uploads/logo.png",
+      palette: "pink",
+      footerAbout: "มหาวิทยาลัยมหาจุฬาลงกรณราชวิทยาลัย วิทยาลัยสงฆ์พิจิตร",
+      footerAddress: "ตำบลบ้านบุ่ง อำเภอเมือง จังหวัดพิจิตร",
+      footerPhone: "056-612345",
+      footerEmail: "contact@mcupct.ac.th",
+      footerFacebook: "https://facebook.com/mcupct",
+      footerLine: "@mcupct",
+      footerCopyright: "© 2026 MCU PCT",
+    });
+  });
 });
 
 /**

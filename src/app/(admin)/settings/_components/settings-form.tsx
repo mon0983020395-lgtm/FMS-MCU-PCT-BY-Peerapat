@@ -13,7 +13,19 @@ import { Upload } from "lucide-react";
 export function SettingsForm({ initial }: { initial: TenantSettings }) {
   const t = useT();
   const router = useRouter();
-  const [form, setForm] = useState({ nameTh: initial.nameTh, nameEn: initial.nameEn, logoUrl: initial.logoUrl ?? "", palette: initial.palette as PaletteId });
+  const [form, setForm] = useState({
+    nameTh: initial.nameTh,
+    nameEn: initial.nameEn,
+    logoUrl: initial.logoUrl ?? "",
+    palette: initial.palette as PaletteId,
+    footerAbout: initial.footerAbout ?? "",
+    footerAddress: initial.footerAddress ?? "",
+    footerPhone: initial.footerPhone ?? "",
+    footerEmail: initial.footerEmail ?? "",
+    footerFacebook: initial.footerFacebook ?? "",
+    footerLine: initial.footerLine ?? "",
+    footerCopyright: initial.footerCopyright ?? "",
+  });
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [pending, start] = useTransition();
   const [uploading, setUploading] = useState(false);
@@ -96,6 +108,89 @@ export function SettingsForm({ initial }: { initial: TenantSettings }) {
             </LiyonField>
           </div>
         </LiyonCard>
+
+        <LiyonCard>
+          <h2>{t("settings.footerTitle")}</h2>
+          <p className="text-sm text-muted-foreground mb-4">{t("settings.footerDesc")}</p>
+          <div className="fields">
+            <LiyonField label={t("settings.footerAbout")} htmlFor="s-footer-about" hint={t("common.optional")}>
+              <textarea
+                id="s-footer-about"
+                rows={3}
+                value={form.footerAbout}
+                onChange={(e) => setForm({ ...form, footerAbout: e.target.value })}
+                placeholder="คำอธิบายสรุปเกี่ยวกับองค์กร/คณะ ที่จะนำไปแสดงในส่วนท้ายเว็บไซต์..."
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              />
+            </LiyonField>
+
+            <LiyonField label={t("settings.footerAddress")} htmlFor="s-footer-address" hint={t("common.optional")}>
+              <textarea
+                id="s-footer-address"
+                rows={2}
+                value={form.footerAddress}
+                onChange={(e) => setForm({ ...form, footerAddress: e.target.value })}
+                placeholder="เช่น 123 อาคารเรียนรวม วิทยาลัยสงฆ์พิจิตร อ.เมือง จ.พิจิตร 66000"
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              />
+            </LiyonField>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <LiyonField label={t("settings.footerPhone")} htmlFor="s-footer-phone" hint={t("common.optional")}>
+                <input
+                  id="s-footer-phone"
+                  type="text"
+                  value={form.footerPhone}
+                  onChange={(e) => setForm({ ...form, footerPhone: e.target.value })}
+                  placeholder="เช่น 056-123456"
+                />
+              </LiyonField>
+
+              <LiyonField label={t("settings.footerEmail")} htmlFor="s-footer-email" hint={t("common.optional")}>
+                <input
+                  id="s-footer-email"
+                  type="email"
+                  value={form.footerEmail}
+                  onChange={(e) => setForm({ ...form, footerEmail: e.target.value })}
+                  placeholder="เช่น contact@fms-mcu.ac.th"
+                />
+              </LiyonField>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <LiyonField label={t("settings.footerFacebook")} htmlFor="s-footer-facebook" hint={t("common.optional")}>
+                <input
+                  id="s-footer-facebook"
+                  type="text"
+                  value={form.footerFacebook}
+                  onChange={(e) => setForm({ ...form, footerFacebook: e.target.value })}
+                  placeholder="เช่น https://facebook.com/..."
+                />
+              </LiyonField>
+
+              <LiyonField label={t("settings.footerLine")} htmlFor="s-footer-line" hint={t("common.optional")}>
+                <input
+                  id="s-footer-line"
+                  type="text"
+                  value={form.footerLine}
+                  onChange={(e) => setForm({ ...form, footerLine: e.target.value })}
+                  placeholder="เช่น @fms-mcu หรือ https://line.me/..."
+                />
+              </LiyonField>
+            </div>
+
+            <LiyonField label={t("settings.footerCopyright")} htmlFor="s-footer-copyright" hint={t("common.optional")}>
+              <input
+                id="s-footer-copyright"
+                type="text"
+                value={form.footerCopyright}
+                onChange={(e) => setForm({ ...form, footerCopyright: e.target.value })}
+                placeholder="เว้นว่างไว้เพื่อใช้ข้อความลิขสิทธิ์เริ่มต้นอัตโนมัติ"
+              />
+            </LiyonField>
+          </div>
+        </LiyonCard>
+
         <LiyonCard>
           <h2>{t("settings.brandTitle")}</h2>
           <p>{t("settings.brandDesc")}</p>

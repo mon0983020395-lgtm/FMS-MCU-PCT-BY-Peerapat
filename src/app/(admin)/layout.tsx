@@ -6,9 +6,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const settings = await resolveTenantSettings();
   const tenantName = settings?.nameTh || settings?.nameEn || null;
   const logoUrl = settings?.logoUrl || null;
+  const footerText = settings?.footerCopyright || (tenantName ? `© ${new Date().getFullYear()} ${tenantName}. สงวนลิขสิทธิ์ทั้งหมด` : null);
 
   return (
-    <AdminLayoutClient brandNameStr={tenantName} brandLogo={logoUrl}>
+    <AdminLayoutClient brandNameStr={tenantName} brandLogo={logoUrl} footerText={footerText}>
       {children}
     </AdminLayoutClient>
   );

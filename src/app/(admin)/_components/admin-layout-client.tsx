@@ -17,9 +17,10 @@ interface AdminLayoutProps {
   children: React.ReactNode;
   brandNameStr?: string | null;
   brandLogo?: string | null;
+  footerText?: string | null;
 }
 
-export function AdminLayoutClient({ children, brandNameStr, brandLogo }: AdminLayoutProps) {
+export function AdminLayoutClient({ children, brandNameStr, brandLogo, footerText }: AdminLayoutProps) {
   const pathname = usePathname();
   const t = useT();
   const locale = useLocale();
@@ -51,6 +52,7 @@ export function AdminLayoutClient({ children, brandNameStr, brandLogo }: AdminLa
   return (
     <AdminShell
       brandName={brandNameStr || t("app.name")} brandTagline={t("app.tagline")} brandHref="/dashboard" brandLogo={brandLogo}
+      footerText={footerText}
       breadcrumb={breadcrumb} breadcrumbLabel={t("common.breadcrumb")}
       roleLabel={roles[0] ? localizedName(roles[0], locale) : null}
       languageSwitcher={<LanguageSwitcher className="lang" />}
