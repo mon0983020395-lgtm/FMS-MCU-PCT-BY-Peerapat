@@ -42,7 +42,7 @@ export function AdminLayoutClient({ children, brandNameStr, brandLogo, footerTex
 
   const initials = (user?.name ?? "?").trim().charAt(0).toUpperCase() || "?";
   const chain = getActiveNavChain(pathname);
-  const breadcrumb: Crumb[] = chain.length === 0 && tail.length === 0 ? [] : [{ label: t("nav.home"), href: "/dashboard" }, ...chain.map((c) => ({ label: t(c.title), href: c.href })), ...tail];
+  const breadcrumb: Crumb[] = chain.length === 0 && tail.length === 0 ? [] : [{ label: t("nav.home"), href: "/" }, ...chain.map((c) => ({ label: t(c.title), href: c.href })), ...tail];
   const ctx = { roles, permissions, isSuperAdmin };
   const links = [
     { href: "/me", label: t("account.profile"), icon: <User className="h-4 w-4" /> },
@@ -51,7 +51,7 @@ export function AdminLayoutClient({ children, brandNameStr, brandLogo, footerTex
 
   return (
     <AdminShell
-      brandName={brandNameStr || t("app.name")} brandTagline={t("app.tagline")} brandHref="/dashboard" brandLogo={brandLogo}
+      brandName={brandNameStr || t("app.name")} brandTagline={t("app.tagline")} brandHref="/" brandLogo={brandLogo}
       footerText={footerText}
       breadcrumb={breadcrumb} breadcrumbLabel={t("common.breadcrumb")}
       roleLabel={roles[0] ? localizedName(roles[0], locale) : null}
