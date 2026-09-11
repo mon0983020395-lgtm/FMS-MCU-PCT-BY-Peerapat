@@ -1,26 +1,14 @@
 import Link from "next/link";
-import { getTenantSettings } from "@/features/identity/server";
+import { resolveTenantSettings } from "@/features/identity/server";
 import { auth } from "@/features/identity/server";
 import { Button } from "@/components/ui/button";
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const session = await auth().catch(() => null);
   
-  // We need to fetch settings for the default tenant.
-  // In a single-tenant setup, tenant is likely "default" or handled by getTenantSettings
-  // Wait, getTenantSettings needs tenantId. If we don't know it, we might just use a hardcoded or fallback string.
-  // Let's assume tenantId is "default" for now if not logged in.
-  let tenantName = "Faculty Web Platform";
-  let logoUrl = null;
-  try {
-    const settings = await getTenantSettings("default");
-    if (settings) {
-      tenantName = settings.nameTh || settings.nameEn || tenantName;
-      logoUrl = settings.logoUrl;
-    }
-  } catch (e) {
-    // ignore
-  }
+  const settings = await resolveTenantSettings();
+  const tenantName = settings?.nameTh || settings?.nameEn || "Faculty Web Platform";
+  const logoUrl = settings?.logoUrl || null;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
