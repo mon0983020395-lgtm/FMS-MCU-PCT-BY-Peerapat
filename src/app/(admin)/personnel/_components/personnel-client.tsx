@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { Plus, Edit2, Trash2, Users, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-import { useT, useLocale } from "@/shared/lib/i18n/client";
+import { useT } from "@/shared/lib/i18n/client";
 import {
   LiyonCard,
   DataTable,
@@ -14,6 +14,8 @@ import {
   LiyonDialogFooter,
   RowMenuItem,
   type DataTableColumn,
+  LiyonField,
+  LiyonSwitchRow,
 } from "@/shared/components/liyon";
 import { Button } from "@/components/ui/button";
 import type { PersonnelDto } from "@/features/personnel";
@@ -29,7 +31,6 @@ interface Props {
 
 export function PersonnelClient({ initialItems, canManage }: Props) {
   const t = useT();
-  const [items, setItems] = useState<PersonnelDto[]>(initialItems);
   const [isPending, startTransition] = useTransition();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -128,8 +129,7 @@ export function PersonnelClient({ initialItems, canManage }: Props) {
       key: "status",
       header: t("personnel.statusField"),
       render: (row) => (
-        // @ts-ignore
-        <StatusPill tone={row.isActive ? "positive" : "neutral"}>
+        <StatusPill tone={row.isActive ? "ok" : "off"}>
           {row.isActive ? t("status.active") : t("status.inactive")}
         </StatusPill>
       ),
@@ -152,21 +152,19 @@ export function PersonnelClient({ initialItems, canManage }: Props) {
       </div>
 
       <LiyonCard>
-        {/* @ts-ignore */}
         <DataTable<PersonnelDto>
-          state={items.length === 0 ? "empty" : "data"}
-          rows={items}
+          state={initialItems.length === 0 ? "empty" : "data"}
+          rows={initialItems}
           columns={columns}
           getRowId={(row) => row.id}
+          headHeading={t("personnel.title")}
           renderRowMenu={
             canManage
               ? (row) => (
                   <>
-                    {/* @ts-ignore */}
                     <RowMenuItem onSelect={() => openEditDialog(row)} icon={<Edit2 className="h-4 w-4" />}>
                       {t("personnel.edit")}
                     </RowMenuItem>
-                    {/* @ts-ignore */}
                     <RowMenuItem onSelect={() => setDeleteConfirmItem(row)} danger icon={<Trash2 className="h-4 w-4" />}>
                       {t("personnel.delete")}
                     </RowMenuItem>
@@ -186,7 +184,6 @@ export function PersonnelClient({ initialItems, canManage }: Props) {
         />
       </LiyonCard>
 
-      {/* @ts-ignore */}
       <LiyonDialog open={modalOpen} onOpenChange={setModalOpen}>
         <LiyonDialogHeader
           title={editingItem ? t("personnel.edit") : t("personnel.create")}
@@ -195,75 +192,81 @@ export function PersonnelClient({ initialItems, canManage }: Props) {
         <LiyonDialogBody>
           <div className="grid gap-4 py-4 md:grid-cols-2">
             <div className="col-span-1">
-              <label className="text-sm font-medium">{t("personnel.firstNameField")}</label>
-              <input
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formFirstName}
-                onChange={(e) => setFormFirstName(e.target.value)}
-              />
+              <LiyonField label={t("personnel.firstNameField")}>
+                <input
+                  className="liyon-input"
+                  value={formFirstName}
+                  onChange={(e) => setFormFirstName(e.target.value)}
+                />
+              </LiyonField>
             </div>
             <div className="col-span-1">
-              <label className="text-sm font-medium">{t("personnel.lastNameField")}</label>
-              <input
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formLastName}
-                onChange={(e) => setFormLastName(e.target.value)}
-              />
+              <LiyonField label={t("personnel.lastNameField")}>
+                <input
+                  className="liyon-input"
+                  value={formLastName}
+                  onChange={(e) => setFormLastName(e.target.value)}
+                />
+              </LiyonField>
             </div>
             <div className="col-span-2">
-              <label className="text-sm font-medium">{t("personnel.positionField")}</label>
-              <input
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formPosition}
-                onChange={(e) => setFormPosition(e.target.value)}
-              />
+              <LiyonField label={t("personnel.positionField")}>
+                <input
+                  className="liyon-input"
+                  value={formPosition}
+                  onChange={(e) => setFormPosition(e.target.value)}
+                />
+              </LiyonField>
             </div>
             <div className="col-span-2">
-              <label className="text-sm font-medium">{t("personnel.departmentField")}</label>
-              <input
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formDepartment}
-                onChange={(e) => setFormDepartment(e.target.value)}
-              />
+              <LiyonField label={t("personnel.departmentField")}>
+                <input
+                  className="liyon-input"
+                  value={formDepartment}
+                  onChange={(e) => setFormDepartment(e.target.value)}
+                />
+              </LiyonField>
             </div>
             <div className="col-span-1">
-              <label className="text-sm font-medium">{t("personnel.emailField")}</label>
-              <input
-                type="email"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formEmail}
-                onChange={(e) => setFormEmail(e.target.value)}
-              />
+              <LiyonField label={t("personnel.emailField")}>
+                <input
+                  type="email"
+                  className="liyon-input"
+                  value={formEmail}
+                  onChange={(e) => setFormEmail(e.target.value)}
+                />
+              </LiyonField>
             </div>
             <div className="col-span-1">
-              <label className="text-sm font-medium">{t("personnel.phoneField")}</label>
-              <input
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formPhone}
-                onChange={(e) => setFormPhone(e.target.value)}
-              />
+              <LiyonField label={t("personnel.phoneField")}>
+                <input
+                  className="liyon-input"
+                  value={formPhone}
+                  onChange={(e) => setFormPhone(e.target.value)}
+                />
+              </LiyonField>
             </div>
-            <div className="col-span-2 flex items-center space-x-2 mt-2">
-              <input
-                type="checkbox"
+            <div className="col-span-2 mt-2">
+              <LiyonSwitchRow
+                id="personnel-active-switch"
+                label={t("status.active")}
+                description={t("personnel.statusField")}
                 checked={formActive}
-                onChange={(e) => setFormActive(e.target.checked)}
+                onCheckedChange={setFormActive}
               />
-              <label className="text-sm font-medium">{t("status.active")}</label>
             </div>
           </div>
         </LiyonDialogBody>
         <LiyonDialogFooter>
           <Button variant="outline" onClick={() => setModalOpen(false)} disabled={isPending}>
-            {t("sample.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button onClick={handleSave} disabled={isPending}>
-            {t("sample.save")}
+            {t("common.save")}
           </Button>
         </LiyonDialogFooter>
       </LiyonDialog>
 
-      {/* @ts-ignore */}
       <LiyonDialog open={!!deleteConfirmItem} onOpenChange={(open: boolean) => !open && setDeleteConfirmItem(null)}>
         <LiyonDialogHeader
           title={t("personnel.delete")}
@@ -276,7 +279,7 @@ export function PersonnelClient({ initialItems, canManage }: Props) {
         </LiyonDialogBody>
         <LiyonDialogFooter>
           <Button variant="outline" onClick={() => setDeleteConfirmItem(null)} disabled={isPending}>
-            {t("sample.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button
             variant="destructive"

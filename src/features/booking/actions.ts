@@ -12,7 +12,7 @@ import { zodErrorMap } from "@/shared/lib/i18n/zod-locale";
 export async function saveBookingAction(input: BookingInput): Promise<ActionResult<string>> {
   return runAction(async () => {
     const ctx = await requirePermission(BOOKING_P.manage);
-    const parsed = bookingSchema.parse(input, { errorMap: zodErrorMap(await getLocale()) } as any);
+    const parsed = bookingSchema.parse(input, { error: zodErrorMap(await getLocale()) });
     let resultId = "";
     if (parsed.id) {
       resultId = await updateBooking(ctx.tenantId, parsed.id, parsed);

@@ -15,6 +15,8 @@ import {
   LiyonDialogFooter,
   RowMenuItem,
   type DataTableColumn,
+  LiyonField,
+  LiyonSwitchRow,
 } from "@/shared/components/liyon";
 import { Button } from "@/components/ui/button";
 import type { AnnouncementDto } from "@/features/news";
@@ -31,7 +33,6 @@ interface Props {
 export function NewsClient({ initialItems, canManage }: Props) {
   const t = useT();
   const locale = useLocale();
-  const [items, setItems] = useState<AnnouncementDto[]>(initialItems);
   const [isPending, startTransition] = useTransition();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -104,8 +105,7 @@ export function NewsClient({ initialItems, canManage }: Props) {
       key: "status",
       header: t("news.statusField"),
       render: (row) => (
-        // @ts-ignore
-        <StatusPill tone={row.isPublished ? "positive" : "neutral"}>
+        <StatusPill tone={row.isPublished ? "ok" : "off"}>
           {row.isPublished ? t("news.published") : t("news.draft")}
         </StatusPill>
       ),
@@ -134,21 +134,19 @@ export function NewsClient({ initialItems, canManage }: Props) {
       </div>
 
       <LiyonCard>
-        {/* @ts-ignore */}
         <DataTable<AnnouncementDto>
-          state={items.length === 0 ? "empty" : "data"}
-          rows={items}
+          state={initialItems.length === 0 ? "empty" : "data"}
+          rows={initialItems}
           columns={columns}
           getRowId={(row) => row.id}
+          headHeading={t("news.title")}
           renderRowMenu={
             canManage
               ? (row) => (
                   <>
-                    {/* @ts-ignore */}
                     <RowMenuItem onSelect={() => openEditDialog(row)} icon={<Edit2 className="h-4 w-4" />}>
                       {t("news.edit")}
                     </RowMenuItem>
-                    {/* @ts-ignore */}
                     <RowMenuItem onSelect={() => setDeleteConfirmItem(row)} danger icon={<Trash2 className="h-4 w-4" />}>
                       {t("news.delete")}
                     </RowMenuItem>
@@ -168,54 +166,47 @@ export function NewsClient({ initialItems, canManage }: Props) {
         />
       </LiyonCard>
 
-      {/* @ts-ignore */}
       <LiyonDialog open={modalOpen} onOpenChange={setModalOpen}>
-        {/* @ts-ignore */}
         <LiyonDialogHeader
           title={editingItem ? t("news.edit") : t("news.create")}
           description={t("news.subtitle")}
         />
         <LiyonDialogBody>
           <div className="space-y-4 py-2">
-            <div>
-              <label className="text-sm font-medium">{t("news.titleField")}</label>
+            <LiyonField label={t("news.titleField")}>
               <input
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="liyon-input"
                 value={formTitle}
                 onChange={(e) => setFormTitle(e.target.value)}
               />
-            </div>
-            <div>
-              <label className="text-sm font-medium">{t("news.contentField")}</label>
+            </LiyonField>
+            <LiyonField label={t("news.contentField")}>
               <textarea
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="liyon-input min-h-[80px]"
                 value={formContent}
                 onChange={(e) => setFormContent(e.target.value)}
               />
-            </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formPublished}
-                onChange={(e) => setFormPublished(e.target.checked)}
-              />
-              <label className="text-sm font-medium">{t("news.statusField")} - {t("news.published")}</label>
-            </div>
+            </LiyonField>
+            <LiyonSwitchRow
+              id="news-published-switch"
+              label={`${t("news.statusField")} - ${t("news.published")}`}
+              description={t("news.statusField")}
+              checked={formPublished}
+              onCheckedChange={setFormPublished}
+            />
           </div>
         </LiyonDialogBody>
         <LiyonDialogFooter>
           <Button variant="outline" onClick={() => setModalOpen(false)} disabled={isPending}>
-            {t("sample.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button onClick={handleSave} disabled={isPending}>
-            {t("sample.save")}
+            {t("common.save")}
           </Button>
         </LiyonDialogFooter>
       </LiyonDialog>
 
-      {/* @ts-ignore */}
       <LiyonDialog open={!!deleteConfirmItem} onOpenChange={(open: boolean) => !open && setDeleteConfirmItem(null)}>
-        {/* @ts-ignore */}
         <LiyonDialogHeader
           title={t("news.delete")}
           description={t("news.deleteConfirm")}
@@ -227,7 +218,7 @@ export function NewsClient({ initialItems, canManage }: Props) {
         </LiyonDialogBody>
         <LiyonDialogFooter>
           <Button variant="outline" onClick={() => setDeleteConfirmItem(null)} disabled={isPending}>
-            {t("sample.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button
             variant="destructive"

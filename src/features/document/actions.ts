@@ -12,7 +12,7 @@ import { zodErrorMap } from "@/shared/lib/i18n/zod-locale";
 export async function saveDocumentAction(input: DocumentInput): Promise<ActionResult<string>> {
   return runAction(async () => {
     const ctx = await requirePermission(DOCUMENT_P.manage);
-    const parsed = documentSchema.parse(input, { errorMap: zodErrorMap(await getLocale()) } as any);
+    const parsed = documentSchema.parse(input, { error: zodErrorMap(await getLocale()) });
     let resultId = "";
     if (parsed.id) {
       resultId = await updateDocument(ctx.tenantId, parsed.id, parsed);

@@ -7,7 +7,7 @@ export async function findBookings(tenantId: string): Promise<BookingDto[]> {
     orderBy: { startTime: "desc" },
     include: { facility: { select: { name: true } }, reserver: { select: { name: true } } }
   });
-  return rows.map((r: any) => ({
+  return rows.map((r) => ({
     id: r.id,
     facilityId: r.facilityId,
     facilityName: r.facility?.name || null,

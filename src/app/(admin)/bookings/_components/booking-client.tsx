@@ -14,9 +14,12 @@ import {
   LiyonDialogFooter,
   RowMenuItem,
   type DataTableColumn,
+  LiyonField,
+  LiyonSelect,
+  type StatusPillTone,
 } from "@/shared/components/liyon";
 import { Button } from "@/components/ui/button";
-import type { BookingDto } from "@/features/booking/server";
+import type { BookingDto, FacilityDto } from "@/features/booking";
 import {
   saveBookingAction,
   deleteBookingAction,
@@ -24,13 +27,12 @@ import {
 
 interface Props {
   initialItems: BookingDto[];
-  facilities: { id: string; name: string }[];
+  facilities: FacilityDto[];
   canManage: boolean;
 }
 
 export function BookingClient({ initialItems, facilities, canManage }: Props) {
   const t = useT();
-  const [items, setItems] = useState<BookingDto[]>(initialItems);
   const [isPending, startTransition] = useTransition();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -41,7 +43,7 @@ export function BookingClient({ initialItems, facilities, canManage }: Props) {
   const [formPurpose, setFormPurpose] = useState("");
   const [formStartTime, setFormStartTime] = useState("");
   const [formEndTime, setFormEndTime] = useState("");
-  const [formStatus, setFormStatus] = useState<"PENDING" | "APPROVED" | "REJECTED">("PENDING");
+  const [formStatus, setFormStatus] = useState<"PENDING" | "APPROVED" | "REJECTED" | "CANCELLED">("PENDING");
 
   const openCreateDialog = () => {
     setEditingItem(null);
@@ -125,10 +127,10 @@ export function BookingClient({ initialItems, facilities, canManage }: Props) {
       key: "status",
       header: t("booking.statusField"),
       render: (row) => {
-        let tone = "neutral";
-        if (row.status === "APPROVED") tone = "positive";
-        if (row.status === "REJECTED") tone = "danger";
-        // @ts-ignore
+        let tone: StatusPillTone = "info";
+        if (row.status === "APPROVED") tone = "ok";
+        if (row.status === "REJECTED") tone = "bad";
+        if (row.status === "PENDING") tone = "warn";
         return <StatusPill tone={tone}>{row.status}</StatusPill>;
       },
     },
@@ -150,21 +152,19 @@ export function BookingClient({ initialItems, facilities, canManage }: Props) {
       </div>
 
       <LiyonCard>
-        {/* @ts-ignore */}
         <DataTable<BookingDto>
-          state={items.length === 0 ? "empty" : "data"}
-          rows={items}
+          state={initialItems.length === 0 ? "empty" : "data"}
+          rows={initialItems}
           columns={columns}
           getRowId={(row) => row.id}
+          headHeading={t("booking.title")}
           renderRowMenu={
             canManage
               ? (row) => (
                   <>
-                    {/* @ts-ignore */}
                     <RowMenuItem onSelect={() => openEditDialog(row)} icon={<Edit2 className="h-4 w-4" />}>
                       {t("booking.edit")}
                     </RowMenuItem>
-                    {/* @ts-ignore */}
                     <RowMenuItem onSelect={() => setDeleteConfirmItem(row)} danger icon={<Trash2 className="h-4 w-4" />}>
                       {t("booking.delete")}
                     </RowMenuItem>
@@ -184,7 +184,6 @@ export function BookingClient({ initialItems, facilities, canManage }: Props) {
         />
       </LiyonCard>
 
-      {/* @ts-ignore */}
       <LiyonDialog open={modalOpen} onOpenChange={setModalOpen}>
         <LiyonDialogHeader
           title={editingItem ? t("booking.edit") : t("booking.create")}
@@ -193,71 +192,73 @@ export function BookingClient({ initialItems, facilities, canManage }: Props) {
         <LiyonDialogBody>
           <div className="grid gap-4 py-4 md:grid-cols-2">
             <div className="col-span-2">
-              <label className="text-sm font-medium">{t("booking.facilityField")}</label>
-              <select
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formFacilityId}
-                onChange={(e) => setFormFacilityId(e.target.value)}
-              >
-                <option value="">-- เลือกสถานที่/ยานพาหนะ --</option>
-                {facilities.map((f) => (
-                  <option key={f.id} value={f.id}>{f.name}</option>
-                ))}
-              </select>
+              <LiyonField label={t("booking.facilityField")}>
+                <LiyonSelect
+                  value={formFacilityId}
+                  onChange={(e) => setFormFacilityId(e.target.value)}
+                >
+                  <option value="">-- เลือกสถานที่/ยานพาหนะ --</option>
+                  {facilities.map((f) => (
+                    <option key={f.id} value={f.id}>{f.name}</option>
+                  ))}
+                </LiyonSelect>
+              </LiyonField>
             </div>
             <div className="col-span-2">
-              <label className="text-sm font-medium">{t("booking.purposeField")}</label>
-              <input
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formPurpose}
-                onChange={(e) => setFormPurpose(e.target.value)}
-              />
+              <LiyonField label={t("booking.purposeField")}>
+                <input
+                  className="liyon-input"
+                  value={formPurpose}
+                  onChange={(e) => setFormPurpose(e.target.value)}
+                />
+              </LiyonField>
             </div>
             <div className="col-span-1">
-              <label className="text-sm font-medium">{t("booking.startTimeField")}</label>
-              <input
-                type="datetime-local"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formStartTime}
-                onChange={(e) => setFormStartTime(e.target.value)}
-              />
+              <LiyonField label={t("booking.startTimeField")}>
+                <input
+                  type="datetime-local"
+                  className="liyon-input"
+                  value={formStartTime}
+                  onChange={(e) => setFormStartTime(e.target.value)}
+                />
+              </LiyonField>
             </div>
             <div className="col-span-1">
-              <label className="text-sm font-medium">{t("booking.endTimeField")}</label>
-              <input
-                type="datetime-local"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formEndTime}
-                onChange={(e) => setFormEndTime(e.target.value)}
-              />
+              <LiyonField label={t("booking.endTimeField")}>
+                <input
+                  type="datetime-local"
+                  className="liyon-input"
+                  value={formEndTime}
+                  onChange={(e) => setFormEndTime(e.target.value)}
+                />
+              </LiyonField>
             </div>
             {editingItem && (
               <div className="col-span-2">
-                <label className="text-sm font-medium">{t("booking.statusField")}</label>
-                <select
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  value={formStatus}
-                  onChange={(e) => setFormStatus(e.target.value as any)}
-                >
-                  <option value="PENDING">PENDING</option>
-                  <option value="APPROVED">APPROVED</option>
-                  <option value="REJECTED">REJECTED</option>
-                </select>
+                <LiyonField label={t("booking.statusField")}>
+                  <LiyonSelect
+                    value={formStatus}
+                    onChange={(e) => setFormStatus(e.target.value as "PENDING" | "APPROVED" | "REJECTED")}
+                  >
+                    <option value="PENDING">PENDING</option>
+                    <option value="APPROVED">APPROVED</option>
+                    <option value="REJECTED">REJECTED</option>
+                  </LiyonSelect>
+                </LiyonField>
               </div>
             )}
           </div>
         </LiyonDialogBody>
         <LiyonDialogFooter>
           <Button variant="outline" onClick={() => setModalOpen(false)} disabled={isPending}>
-            {t("sample.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button onClick={handleSave} disabled={isPending}>
-            {t("sample.save")}
+            {t("common.save")}
           </Button>
         </LiyonDialogFooter>
       </LiyonDialog>
 
-      {/* @ts-ignore */}
       <LiyonDialog open={!!deleteConfirmItem} onOpenChange={(open: boolean) => !open && setDeleteConfirmItem(null)}>
         <LiyonDialogHeader
           title={t("booking.delete")}
@@ -270,7 +271,7 @@ export function BookingClient({ initialItems, facilities, canManage }: Props) {
         </LiyonDialogBody>
         <LiyonDialogFooter>
           <Button variant="outline" onClick={() => setDeleteConfirmItem(null)} disabled={isPending}>
-            {t("sample.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button
             variant="destructive"

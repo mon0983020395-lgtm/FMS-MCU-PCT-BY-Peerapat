@@ -12,7 +12,7 @@ import { zodErrorMap } from "@/shared/lib/i18n/zod-locale";
 export async function savePersonnelAction(input: PersonnelInput): Promise<ActionResult<string>> {
   return runAction(async () => {
     const ctx = await requirePermission(PERSONNEL_P.manage);
-    const parsed = personnelSchema.parse(input, { errorMap: zodErrorMap(await getLocale()) } as any);
+    const parsed = personnelSchema.parse(input, { error: zodErrorMap(await getLocale()) });
     let resultId = "";
     if (parsed.id) {
       resultId = await updatePersonnel(ctx.tenantId, parsed.id, parsed);

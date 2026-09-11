@@ -7,7 +7,7 @@ export async function findAnnouncements(tenantId: string): Promise<AnnouncementD
     orderBy: { createdAt: "desc" },
     include: { author: { select: { name: true } } },
   });
-  return rows.map((r: any) => ({
+  return rows.map((r) => ({
     id: r.id,
     title: r.title,
     content: r.content,

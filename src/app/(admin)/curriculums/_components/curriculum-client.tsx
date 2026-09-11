@@ -14,6 +14,8 @@ import {
   LiyonDialogFooter,
   RowMenuItem,
   type DataTableColumn,
+  LiyonField,
+  LiyonSwitchRow,
 } from "@/shared/components/liyon";
 import { Button } from "@/components/ui/button";
 import type { CurriculumDto } from "@/features/curriculum";
@@ -29,7 +31,6 @@ interface Props {
 
 export function CurriculumClient({ initialItems, canManage }: Props) {
   const t = useT();
-  const [items, setItems] = useState<CurriculumDto[]>(initialItems);
   const [isPending, startTransition] = useTransition();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -39,8 +40,8 @@ export function CurriculumClient({ initialItems, canManage }: Props) {
   const [formCode, setFormCode] = useState("");
   const [formNameTh, setFormNameTh] = useState("");
   const [formNameEn, setFormNameEn] = useState("");
-  const [formDegreeType, setFormDegreeType] = useState("");
-  const [formTotalCredits, setFormTotalCredits] = useState<number>(0);
+  const [formDegreeType, setFormDegreeType] = useState("Bachelor");
+  const [formTotalCredits, setFormTotalCredits] = useState(0);
   const [formDescription, setFormDescription] = useState("");
   const [formActive, setFormActive] = useState(true);
 
@@ -50,7 +51,7 @@ export function CurriculumClient({ initialItems, canManage }: Props) {
     setFormNameTh("");
     setFormNameEn("");
     setFormDegreeType("Bachelor");
-    setFormTotalCredits(120);
+    setFormTotalCredits(0);
     setFormDescription("");
     setFormActive(true);
     setModalOpen(true);
@@ -60,8 +61,8 @@ export function CurriculumClient({ initialItems, canManage }: Props) {
     setEditingItem(item);
     setFormCode(item.code);
     setFormNameTh(item.nameTh);
-    setFormNameEn(item.nameEn);
-    setFormDegreeType(item.degreeType);
+    setFormNameEn(item.nameEn || "");
+    setFormDegreeType(item.degreeType || "Bachelor");
     setFormTotalCredits(item.totalCredits);
     setFormDescription(item.description || "");
     setFormActive(item.isActive);
@@ -69,7 +70,7 @@ export function CurriculumClient({ initialItems, canManage }: Props) {
   };
 
   const handleSave = () => {
-    if (!formCode.trim() || !formNameTh.trim() || !formNameEn.trim() || !formDegreeType.trim() || formTotalCredits <= 0) {
+    if (!formCode.trim() || !formNameTh.trim()) {
       toast.error(t("error.validation"));
       return;
     }
@@ -133,8 +134,7 @@ export function CurriculumClient({ initialItems, canManage }: Props) {
       key: "status",
       header: t("curriculum.statusField"),
       render: (row) => (
-        // @ts-ignore
-        <StatusPill tone={row.isActive ? "positive" : "neutral"}>
+        <StatusPill tone={row.isActive ? "ok" : "off"}>
           {row.isActive ? t("status.active") : t("status.inactive")}
         </StatusPill>
       ),
@@ -157,21 +157,19 @@ export function CurriculumClient({ initialItems, canManage }: Props) {
       </div>
 
       <LiyonCard>
-        {/* @ts-ignore */}
         <DataTable<CurriculumDto>
-          state={items.length === 0 ? "empty" : "data"}
-          rows={items}
+          state={initialItems.length === 0 ? "empty" : "data"}
+          rows={initialItems}
           columns={columns}
           getRowId={(row) => row.id}
+          headHeading={t("curriculum.title")}
           renderRowMenu={
             canManage
               ? (row) => (
                   <>
-                    {/* @ts-ignore */}
                     <RowMenuItem onSelect={() => openEditDialog(row)} icon={<Edit2 className="h-4 w-4" />}>
                       {t("curriculum.edit")}
                     </RowMenuItem>
-                    {/* @ts-ignore */}
                     <RowMenuItem onSelect={() => setDeleteConfirmItem(row)} danger icon={<Trash2 className="h-4 w-4" />}>
                       {t("curriculum.delete")}
                     </RowMenuItem>
@@ -191,7 +189,6 @@ export function CurriculumClient({ initialItems, canManage }: Props) {
         />
       </LiyonCard>
 
-      {/* @ts-ignore */}
       <LiyonDialog open={modalOpen} onOpenChange={setModalOpen}>
         <LiyonDialogHeader
           title={editingItem ? t("curriculum.edit") : t("curriculum.create")}
@@ -200,79 +197,85 @@ export function CurriculumClient({ initialItems, canManage }: Props) {
         <LiyonDialogBody>
           <div className="grid gap-4 py-4 md:grid-cols-2">
             <div className="col-span-2">
-              <label className="text-sm font-medium">{t("curriculum.codeField")}</label>
-              <input
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formCode}
-                onChange={(e) => setFormCode(e.target.value)}
-              />
+              <LiyonField label={t("curriculum.codeField")}>
+                <input
+                  className="liyon-input"
+                  value={formCode}
+                  onChange={(e) => setFormCode(e.target.value)}
+                />
+              </LiyonField>
             </div>
             <div className="col-span-2">
-              <label className="text-sm font-medium">{t("curriculum.nameThField")}</label>
-              <input
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formNameTh}
-                onChange={(e) => setFormNameTh(e.target.value)}
-              />
+              <LiyonField label={t("curriculum.nameThField")}>
+                <input
+                  className="liyon-input"
+                  value={formNameTh}
+                  onChange={(e) => setFormNameTh(e.target.value)}
+                />
+              </LiyonField>
             </div>
             <div className="col-span-2">
-              <label className="text-sm font-medium">{t("curriculum.nameEnField")}</label>
-              <input
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formNameEn}
-                onChange={(e) => setFormNameEn(e.target.value)}
-              />
+              <LiyonField label={t("curriculum.nameEnField")}>
+                <input
+                  className="liyon-input"
+                  value={formNameEn}
+                  onChange={(e) => setFormNameEn(e.target.value)}
+                />
+              </LiyonField>
             </div>
             <div className="col-span-1">
-              <label className="text-sm font-medium">{t("curriculum.degreeTypeField")}</label>
-              <select
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formDegreeType}
-                onChange={(e) => setFormDegreeType(e.target.value)}
-              >
-                <option value="Bachelor">Bachelor</option>
-                <option value="Master">Master</option>
-                <option value="Doctorate">Doctorate</option>
-              </select>
+              <LiyonField label={t("curriculum.degreeTypeField")}>
+                <select
+                  className="liyon-input"
+                  value={formDegreeType}
+                  onChange={(e) => setFormDegreeType(e.target.value)}
+                >
+                  <option value="Bachelor">Bachelor</option>
+                  <option value="Master">Master</option>
+                  <option value="Doctorate">Doctorate</option>
+                </select>
+              </LiyonField>
             </div>
             <div className="col-span-1">
-              <label className="text-sm font-medium">{t("curriculum.totalCreditsField")}</label>
-              <input
-                type="number"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formTotalCredits}
-                onChange={(e) => setFormTotalCredits(Number(e.target.value))}
-              />
+              <LiyonField label={t("curriculum.totalCreditsField")}>
+                <input
+                  type="number"
+                  className="liyon-input"
+                  value={formTotalCredits}
+                  onChange={(e) => setFormTotalCredits(Number(e.target.value))}
+                />
+              </LiyonField>
             </div>
             <div className="col-span-2">
-              <label className="text-sm font-medium">{t("curriculum.descriptionField")}</label>
-              <textarea
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formDescription}
-                onChange={(e) => setFormDescription(e.target.value)}
-              />
+              <LiyonField label={t("curriculum.descriptionField")}>
+                <textarea
+                  className="liyon-input min-h-[80px]"
+                  value={formDescription}
+                  onChange={(e) => setFormDescription(e.target.value)}
+                />
+              </LiyonField>
             </div>
-            <div className="col-span-2 flex items-center space-x-2 mt-2">
-              <input
-                type="checkbox"
+            <div className="col-span-2 mt-2">
+              <LiyonSwitchRow
+                id="curriculum-active-switch"
+                label={t("status.active")}
+                description={t("curriculum.statusField")}
                 checked={formActive}
-                onChange={(e) => setFormActive(e.target.checked)}
+                onCheckedChange={setFormActive}
               />
-              <label className="text-sm font-medium">{t("status.active")}</label>
             </div>
           </div>
         </LiyonDialogBody>
         <LiyonDialogFooter>
           <Button variant="outline" onClick={() => setModalOpen(false)} disabled={isPending}>
-            {t("sample.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button onClick={handleSave} disabled={isPending}>
-            {t("sample.save")}
+            {t("common.save")}
           </Button>
         </LiyonDialogFooter>
       </LiyonDialog>
 
-      {/* @ts-ignore */}
       <LiyonDialog open={!!deleteConfirmItem} onOpenChange={(open: boolean) => !open && setDeleteConfirmItem(null)}>
         <LiyonDialogHeader
           title={t("curriculum.delete")}
@@ -285,7 +288,7 @@ export function CurriculumClient({ initialItems, canManage }: Props) {
         </LiyonDialogBody>
         <LiyonDialogFooter>
           <Button variant="outline" onClick={() => setDeleteConfirmItem(null)} disabled={isPending}>
-            {t("sample.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button
             variant="destructive"

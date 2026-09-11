@@ -7,7 +7,7 @@ import { DataTable, type DataTableColumn, StatusPill, RowMenuItem, LiyonDialog, 
 import { Button } from "@/components/ui/button";
 import { saveEbookAction, deleteEbookAction } from "@/features/ebook/actions";
 import type { EbookDto } from "@/features/ebook/server";
-import { Book, Plus, Edit2, Trash2 } from "lucide-react";
+import { Book, Plus, Edit2, Trash2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
 function emptyForm() {
@@ -28,7 +28,7 @@ function emptyForm() {
 export function EbookClient({ initialData, canManage }: { initialData: EbookDto[]; canManage: boolean }) {
   const t = useT();
   const router = useRouter();
-  const [data, setData] = useState(initialData);
+  const [data] = useState(initialData);
   const [isPending, startTransition] = useTransition();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -152,13 +152,13 @@ export function EbookClient({ initialData, canManage }: { initialData: EbookDto[
             </Button>
           </div>
         )}
-        {/* @ts-ignore */}
+        
         <DataTable
-          columns={columns}
+          columns={columns} headHeading={t("ebook.title")}
           rows={data}
           getRowId={(r) => r.id}
           state={data.length > 0 ? "data" : "empty"}
-          empty={{
+          error={{ icon: <AlertCircle className="h-10 w-10 text-danger" />, title: t("common.error") }} empty={{
             icon: <Book className="w-10 h-10 text-slate-300" />,
             title: t("ebook.empty"),
           }}
@@ -166,11 +166,11 @@ export function EbookClient({ initialData, canManage }: { initialData: EbookDto[
             canManage
               ? (row) => (
                   <>
-                    {/* @ts-ignore */}
+                    
                     <RowMenuItem onSelect={() => openEditDialog(row)} icon={<Edit2 className="h-4 w-4" />}>
                       {t("ebook.edit")}
                     </RowMenuItem>
-                    {/* @ts-ignore */}
+                    
                     <RowMenuItem onSelect={() => setDeleteConfirmItem(row)} danger icon={<Trash2 className="h-4 w-4" />}>
                       {t("ebook.delete")}
                     </RowMenuItem>

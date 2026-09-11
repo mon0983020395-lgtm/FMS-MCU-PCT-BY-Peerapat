@@ -14,9 +14,12 @@ import {
   LiyonDialogFooter,
   RowMenuItem,
   type DataTableColumn,
+  LiyonField,
+  LiyonSelect,
+  type StatusPillTone,
 } from "@/shared/components/liyon";
 import { Button } from "@/components/ui/button";
-import type { DocumentDto } from "@/features/document/server";
+import type { DocumentDto } from "@/features/document";
 import {
   saveDocumentAction,
   deleteDocumentAction,
@@ -30,7 +33,6 @@ interface Props {
 
 export function DocumentClient({ initialItems, canManage, canApprove }: Props) {
   const t = useT();
-  const [items, setItems] = useState<DocumentDto[]>(initialItems);
   const [isPending, startTransition] = useTransition();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -135,10 +137,10 @@ export function DocumentClient({ initialItems, canManage, canApprove }: Props) {
       key: "status",
       header: t("document.statusField"),
       render: (row) => {
-        let tone = "neutral";
-        if (row.status === "APPROVED") tone = "positive";
-        if (row.status === "REJECTED") tone = "danger";
-        // @ts-ignore
+        let tone: StatusPillTone = "info";
+        if (row.status === "APPROVED") tone = "ok";
+        if (row.status === "REJECTED") tone = "bad";
+        if (row.status === "PENDING") tone = "warn";
         return <StatusPill tone={tone}>{row.status}</StatusPill>;
       },
     },
@@ -160,12 +162,12 @@ export function DocumentClient({ initialItems, canManage, canApprove }: Props) {
       </div>
 
       <LiyonCard>
-        {/* @ts-ignore */}
         <DataTable<DocumentDto>
-          state={items.length === 0 ? "empty" : "data"}
-          rows={items}
+          state={initialItems.length === 0 ? "empty" : "data"}
+          rows={initialItems}
           columns={columns}
           getRowId={(row) => row.id}
+          headHeading={t("document.title")}
           renderRowMenu={
             canManage || canApprove
               ? (row) => (
@@ -206,7 +208,6 @@ export function DocumentClient({ initialItems, canManage, canApprove }: Props) {
         />
       </LiyonCard>
 
-      {/* @ts-ignore */}
       <LiyonDialog open={modalOpen} onOpenChange={setModalOpen}>
         <LiyonDialogHeader
           title={editingItem ? t("document.edit") : t("document.create")}
@@ -214,58 +215,52 @@ export function DocumentClient({ initialItems, canManage, canApprove }: Props) {
         />
         <LiyonDialogBody>
           <div className="grid gap-4 py-4 md:grid-cols-1">
-            <div>
-              <label className="text-sm font-medium">{t("document.docTypeField")}</label>
+            <LiyonField label={t("document.docTypeField")}>
               <input
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="liyon-input"
                 value={formDocType}
                 onChange={(e) => setFormDocType(e.target.value)}
                 placeholder="เช่น คำร้องขอลาป่วย, เอกสารเบิกจ่าย"
               />
-            </div>
-            <div>
-              <label className="text-sm font-medium">{t("document.titleField")}</label>
+            </LiyonField>
+            <LiyonField label={t("document.titleField")}>
               <input
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="liyon-input"
                 value={formTitle}
                 onChange={(e) => setFormTitle(e.target.value)}
               />
-            </div>
-            <div>
-              <label className="text-sm font-medium">{t("document.remarksField")}</label>
+            </LiyonField>
+            <LiyonField label={t("document.remarksField")}>
               <textarea
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="liyon-input min-h-[80px]"
                 value={formRemarks}
                 onChange={(e) => setFormRemarks(e.target.value)}
               />
-            </div>
+            </LiyonField>
             {canApprove && editingItem && (
-              <div>
-                <label className="text-sm font-medium">{t("document.statusField")}</label>
-                <select
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              <LiyonField label={t("document.statusField")}>
+                <LiyonSelect
                   value={formStatus}
-                  onChange={(e) => setFormStatus(e.target.value as any)}
+                  onChange={(e) => setFormStatus(e.target.value as "PENDING" | "APPROVED" | "REJECTED")}
                 >
                   <option value="PENDING">PENDING</option>
                   <option value="APPROVED">APPROVED</option>
                   <option value="REJECTED">REJECTED</option>
-                </select>
-              </div>
+                </LiyonSelect>
+              </LiyonField>
             )}
           </div>
         </LiyonDialogBody>
         <LiyonDialogFooter>
           <Button variant="outline" onClick={() => setModalOpen(false)} disabled={isPending}>
-            {t("sample.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button onClick={handleSave} disabled={isPending}>
-            {t("sample.save")}
+            {t("common.save")}
           </Button>
         </LiyonDialogFooter>
       </LiyonDialog>
 
-      {/* @ts-ignore */}
       <LiyonDialog open={!!deleteConfirmItem} onOpenChange={(open: boolean) => !open && setDeleteConfirmItem(null)}>
         <LiyonDialogHeader
           title={t("document.delete")}
@@ -278,7 +273,7 @@ export function DocumentClient({ initialItems, canManage, canApprove }: Props) {
         </LiyonDialogBody>
         <LiyonDialogFooter>
           <Button variant="outline" onClick={() => setDeleteConfirmItem(null)} disabled={isPending}>
-            {t("sample.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button
             variant="destructive"

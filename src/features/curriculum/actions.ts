@@ -12,7 +12,7 @@ import { zodErrorMap } from "@/shared/lib/i18n/zod-locale";
 export async function saveCurriculumAction(input: CurriculumInput): Promise<ActionResult<string>> {
   return runAction(async () => {
     const ctx = await requirePermission(CURRICULUM_P.manage);
-    const parsed = curriculumSchema.parse(input, { errorMap: zodErrorMap(await getLocale()) } as any);
+    const parsed = curriculumSchema.parse(input, { error: zodErrorMap(await getLocale()) });
     let resultId = "";
     if (parsed.id) {
       resultId = await updateCurriculum(ctx.tenantId, parsed.id, parsed);

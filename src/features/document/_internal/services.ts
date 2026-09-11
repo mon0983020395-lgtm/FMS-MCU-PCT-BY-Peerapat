@@ -7,7 +7,7 @@ export async function findDocuments(tenantId: string): Promise<DocumentDto[]> {
     orderBy: { createdAt: "desc" },
     include: { requester: { select: { name: true } } }
   });
-  return rows.map((r: any) => ({
+  return rows.map((r) => ({
     id: r.id,
     docType: r.docType,
     title: r.title,

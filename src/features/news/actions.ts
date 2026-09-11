@@ -12,7 +12,7 @@ import { zodErrorMap } from "@/shared/lib/i18n/zod-locale";
 export async function saveAnnouncementAction(input: AnnouncementInput): Promise<ActionResult<string>> {
   return runAction(async () => {
     const ctx = await requirePermission(NEWS_P.manage);
-    const parsed = announcementSchema.parse(input, { errorMap: zodErrorMap(await getLocale()) } as any);
+    const parsed = announcementSchema.parse(input, { error: zodErrorMap(await getLocale()) });
     let resultId = "";
     if (parsed.id) {
       resultId = await updateAnnouncement(ctx.tenantId, parsed.id, parsed);

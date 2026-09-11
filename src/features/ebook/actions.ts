@@ -12,7 +12,7 @@ import { zodErrorMap } from "@/shared/lib/i18n/zod-locale";
 export async function saveEbookAction(input: EbookInput): Promise<ActionResult<string>> {
   return runAction(async () => {
     const ctx = await requirePermission(EBOOK_P.manage);
-    const parsed = ebookSchema.parse(input, { errorMap: zodErrorMap(await getLocale()) } as any);
+    const parsed = ebookSchema.parse(input, { error: zodErrorMap(await getLocale()) });
     const result = await saveEbook(ctx.tenantId, parsed);
     revalidatePath("/ebooks");
     return result.id;
