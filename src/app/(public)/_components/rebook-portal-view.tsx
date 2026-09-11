@@ -28,8 +28,7 @@ import {
   BookCheck,
 } from "lucide-react";
 import type { TenantSettings } from "@/features/identity";
-import { HeroMotionCanvas } from "./hero-motion-canvas";
-import { FloatingElements } from "./floating-elements";
+import { GuardHero } from "./guard-hero";
 
 export interface BookItem {
   id: string;
@@ -88,29 +87,6 @@ export function RebookPortalView({ settings, initialBooks, initialNews }: Rebook
   const [selectedTab, setSelectedTab] = useState("all");
   const [activeBookModal, setActiveBookModal] = useState<BookItem | null>(null);
 
-  // Mouse tracking for interactive spotlight and parallax
-  const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
-  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
-
-  const handleHeroMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setMousePos({ x, y });
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    setMouseOffset({
-      x: ((x - centerX) / centerX) * 35,
-      y: ((y - centerY) / centerY) * 35,
-    });
-  };
-
-  const handleHeroMouseLeave = () => {
-    setMousePos({ x: -100, y: -100 });
-    setMouseOffset({ x: 0, y: 0 });
-  };
-
   const tenantName = settings?.nameTh || "วิทยาลัยสงฆ์พิจิตร";
   const tenantNameEn = settings?.nameEn || "Faculty Web Platform";
 
@@ -144,124 +120,21 @@ export function RebookPortalView({ settings, initialBooks, initialNews }: Rebook
   return (
     <div className="flex flex-col w-full bg-[#fbfbfa] dark:bg-background text-foreground transition-colors">
       
-      {/* 1. HERO SECTION (ReBook Editorial Minimalist Style with Interactive Motion & Parallax) */}
-      <section
-        onMouseMove={handleHeroMouseMove}
-        onMouseLeave={handleHeroMouseLeave}
-        className="relative overflow-hidden pt-14 pb-18 md:pt-22 md:pb-26 px-4 border-b border-border/40 bg-gradient-to-b from-primary/10 via-background to-background"
-      >
-        {/* Layer 1: Interactive Fluid Motion Aurora Canvas */}
-        <HeroMotionCanvas mousePos={mousePos} />
-
-        {/* Layer 2: Subtle Academic Geometric Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none -z-10 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)]" />
-
-        {/* Layer 3: Floating Literary Elements with Mouse Parallax */}
-        <FloatingElements mouseOffset={mouseOffset} />
-
-        <div className="container mx-auto max-w-5xl text-center space-y-6 relative z-10">
-          
-          {/* ReBook Eyebrow Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-semibold tracking-wide uppercase shadow-sm backdrop-blur-xs transform hover:scale-105 transition-transform">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>REBOOK CURATION PLATFORM • {tenantName}</span>
-          </div>
-
-          {/* Main Headline with Shimmer Gradient Effect */}
-          <div className="space-y-3">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-foreground leading-[1.15]">
-              คัดสรรความรู้{" "}
-              <span className="relative inline-block">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-rose-500 to-amber-500 animate-pulse [animation-duration:3s]">
-                  สู่การอ่าน
-                </span>
-                <span className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary via-rose-400 to-amber-400 rounded-full" />
-              </span>{" "}
-              ที่เปี่ยมความหมาย
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground font-light max-w-2xl mx-auto">
-              Curated Academic Wisdom for Intentional & Lifelong Reading
-            </p>
-          </div>
-
-          <p className="text-sm md:text-base text-muted-foreground/90 max-w-2xl mx-auto leading-relaxed">
-            ศูนย์รวมคลังหนังสืออิเล็กทรอนิกส์ ตำราวิชาการ งานวิจัย และองค์ความรู้ที่ผ่านการคัดสรรโดยคณาจารย์ {tenantName} เพื่อให้นิสิตและผู้แสวงหาความรู้เข้าถึงได้ทุกที่ ทุกเวลา
-          </p>
-
-          {/* ReBook Signature Interactive Search Bar with Ambient Glow */}
-          <div className="pt-4 max-w-2xl mx-auto">
-            <div className="relative group flex items-center bg-card/90 backdrop-blur-md border border-border/80 rounded-full shadow-lg hover:shadow-xl hover:border-primary/50 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/15 transition-all duration-300 p-1.5">
-              <div className="pl-4 text-muted-foreground group-hover:text-primary transition-colors">
-                <Search className="w-5 h-5" />
-              </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="ค้นหาชื่อหนังสือ, ผู้แต่ง, คำสำคัญ, หรือหัวข้อวิชาการ..."
-                className="w-full bg-transparent px-3 py-2 text-sm md:text-base outline-none placeholder:text-muted-foreground/70"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="p-1.5 text-muted-foreground hover:text-foreground mr-1 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-              <Button size="sm" className="rounded-full px-6 font-medium shrink-0 shadow-sm transition-transform hover:scale-105 active:scale-95">
-                ค้นหา
-              </Button>
-            </div>
-          </div>
-
-          {/* Quick Category Chips Slider with Micro-Hover Bounce */}
-          <div className="flex items-center justify-center gap-2 overflow-x-auto py-2 px-1 max-w-4xl mx-auto scrollbar-none">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setSelectedCategory(cat)}
-                className={`text-xs md:text-sm px-4 py-1.5 rounded-full font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 shrink-0 shadow-xs ${
-                  selectedCategory === cat
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-card/90 backdrop-blur-sm border border-border/60 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-card"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Curated Stats Row with 3D Hover Tilt & Gradient Border Glow */}
-          <div className="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto text-left">
-            <div className="group p-4 rounded-2xl bg-card/85 border border-border/60 hover:border-primary/50 shadow-sm hover:shadow-md backdrop-blur-md transition-all duration-300 transform hover:-translate-y-1">
-              <div className="text-2xl font-extrabold text-foreground group-hover:text-primary transition-colors">1,200+</div>
-              <div className="text-xs text-muted-foreground mt-0.5">หนังสือและตำราในคลัง</div>
-            </div>
-            <div className="group p-4 rounded-2xl bg-card/85 border border-border/60 hover:border-primary/50 shadow-sm hover:shadow-md backdrop-blur-md transition-all duration-300 transform hover:-translate-y-1">
-              <div className="text-2xl font-extrabold text-primary flex items-center gap-1 group-hover:scale-105 origin-left transition-transform">
-                4.9 <Star className="w-4 h-4 fill-primary" />
-              </div>
-              <div className="text-xs text-muted-foreground mt-0.5">ดัชนีความพึงพอใจผู้อ่าน</div>
-            </div>
-            <div className="group p-4 rounded-2xl bg-card/85 border border-border/60 hover:border-primary/50 shadow-sm hover:shadow-md backdrop-blur-md transition-all duration-300 transform hover:-translate-y-1">
-              <div className="text-2xl font-extrabold text-foreground group-hover:text-primary transition-colors">100%</div>
-              <div className="text-xs text-muted-foreground mt-0.5">เปิดอ่านออนไลน์ฟรี 24 ชม.</div>
-            </div>
-            <div className="group p-4 rounded-2xl bg-card/85 border border-border/60 hover:border-primary/50 shadow-sm hover:shadow-md backdrop-blur-md transition-all duration-300 transform hover:-translate-y-1">
-              <div className="text-2xl font-extrabold text-foreground group-hover:text-primary transition-colors">6 คลังวิชา</div>
-              <div className="text-xs text-muted-foreground mt-0.5">ครอบคลุมทุกหมวดหมู่</div>
-            </div>
-          </div>
-
-        </div>
-      </section>
+      {/* 1. GUARD HERO SECTION (EarthGuard Atmospheric Looping Video, Dual Typography & Interactive Controls) */}
+      <GuardHero
+        tenantName={tenantName}
+        tenantNameEn={tenantNameEn}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        categories={CATEGORIES}
+        totalBooks={initialBooks.length > 0 ? initialBooks.length : 1200}
+      />
 
       {/* 2. CURATOR'S SPOTLIGHT / BOOK OF THE MONTH (ReBook Highlight Card) */}
       {spotlightBook && (
-        <section className="py-12 md:py-16 px-4">
+        <section id="portal-catalog" className="py-12 md:py-16 px-4">
           <div className="container mx-auto max-w-5xl">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
