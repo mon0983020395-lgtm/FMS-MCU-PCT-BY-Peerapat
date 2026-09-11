@@ -129,28 +129,7 @@
   }
 }
 
-@keyframes laser-scan {
-  0% {
-    top: 15%;
-    opacity: 0;
-  }
-  20% {
-    opacity: 0.85;
-  }
-  80% {
-    opacity: 0.85;
-  }
-  100% {
-    top: 85%;
-    opacity: 0;
-  }
-}
-
 .animate-float-futuristic {
   animation: float-futuristic 7s ease-in-out infinite;
-}
-
-.animate-laser-scan {
-  animation: laser-scan 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 

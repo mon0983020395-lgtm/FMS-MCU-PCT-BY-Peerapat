@@ -4,8 +4,6 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import {
   BookOpen,
   Play,
-  Volume2,
-  VolumeX,
   Search,
   X,
   Globe,
@@ -46,7 +44,6 @@ export function GuardHero({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const heroRef = useRef<HTMLDivElement | null>(null);
 
-  const [isAmbientSound, setIsAmbientSound] = useState(false);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
@@ -80,7 +77,7 @@ export function GuardHero({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isVideoModalOpen]);
 
-  // Mouse Move for Parallax and Spotlight
+  // Mouse Move for Parallax and Spotlight (Smooth, gentle damping)
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -90,8 +87,8 @@ export function GuardHero({
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     setParallaxOffset({
-      x: ((x - centerX) / centerX) * 15,
-      y: ((y - centerY) / centerY) * 15,
+      x: ((x - centerX) / centerX) * 4,
+      y: ((y - centerY) / centerY) * 4,
     });
   };
 
@@ -140,16 +137,16 @@ export function GuardHero({
 
     const brandRgb = getBrandColor();
 
-    // Futuristic Knowledge Data Particles
-    const particleCount = 38;
+    // Futuristic Knowledge Data Particles (Slow, calm, ethereal floating)
+    const particleCount = 26;
     const particles = Array.from({ length: particleCount }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      radius: Math.random() * 2.2 + 0.8,
-      speedX: (Math.random() - 0.5) * 0.5,
-      speedY: -Math.random() * 0.6 - 0.3, // Ascending upwards from the book
-      opacity: Math.random() * 0.7 + 0.2,
-      pulseSpeed: Math.random() * 0.03 + 0.01,
+      radius: Math.random() * 1.8 + 0.6,
+      speedX: (Math.random() - 0.5) * 0.08, // Very slow, gentle drift
+      speedY: -Math.random() * 0.1 - 0.05, // Slow, calm ascending motion
+      opacity: Math.random() * 0.6 + 0.15,
+      pulseSpeed: Math.random() * 0.012 + 0.004,
       isGlyph: Math.random() > 0.75,
       char: ["0", "1", "α", "β", "Ω", "∑", "λ", "✦", "◆"][Math.floor(Math.random() * 9)],
     }));
@@ -160,10 +157,10 @@ export function GuardHero({
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Smooth lerp to mouse position for ambient spotlight
+      // Smooth, slow gentle lerp to mouse position for ambient spotlight
       if (mousePos.x > 0 && mousePos.y > 0) {
-        spotlightX += (mousePos.x - spotlightX) * 0.06;
-        spotlightY += (mousePos.y - spotlightY) * 0.06;
+        spotlightX += (mousePos.x - spotlightX) * 0.02;
+        spotlightY += (mousePos.y - spotlightY) * 0.02;
 
         const radial = ctx.createRadialGradient(
           spotlightX,
@@ -253,15 +250,7 @@ export function GuardHero({
             className="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-700 ease-out"
             style={{
               backgroundImage: `url(${BOOK_BG_IMAGE})`,
-              transform: `scale(1.04) translate(${parallaxOffset.x * -0.5}px, ${parallaxOffset.y * -0.5}px)`,
-            }}
-          />
-
-          {/* Layer 1.5: Futuristic Laser Scanner Sweep Line over the Open Book */}
-          <div
-            className="absolute left-1/3 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-70 blur-[1px] animate-laser-scan pointer-events-none"
-            style={{
-              boxShadow: "0 0 15px var(--brand-glow, rgba(61, 130, 232, 0.8))",
+              transform: `scale(1.03) translate(${parallaxOffset.x * -0.25}px, ${parallaxOffset.y * -0.25}px)`,
             }}
           />
 
@@ -470,24 +459,12 @@ export function GuardHero({
         <div className="relative z-20 w-full border-t border-white/10 bg-[#070c14]/70 backdrop-blur-md py-4 px-6 sm:px-8 lg:px-12">
           <div className="container mx-auto max-w-[1440px] flex items-center justify-between gap-4">
             
-            {/* Left: Atmospheric Sound / Audio indicator */}
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setIsAmbientSound(!isAmbientSound)}
-                aria-label={isAmbientSound ? "Unmute Ambient Stream" : "Mute Ambient Stream"}
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-primary hover:border-primary/50 hover:bg-white/10 transition-all cursor-pointer"
-                title={isAmbientSound ? "ปิดเสียงบรรยากาศ" : "เปิดเสียงบรรยากาศ"}
-              >
-                {isAmbientSound ? <Volume2 className="w-4 h-4 text-primary" /> : <VolumeX className="w-4 h-4" />}
-              </button>
-
-              <div className="flex items-center gap-2 pl-2">
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-[11px] font-mono text-white/40 hidden sm:inline-block">
-                  HOLOGRAPHIC KNOWLEDGE ENGINE • ACTIVE
-                </span>
-              </div>
+            {/* Left: Futuristic Knowledge Engine Status Indicator */}
+            <div className="flex items-center gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <span className="text-[11px] font-mono text-white/50 tracking-wider">
+                HOLOGRAPHIC KNOWLEDGE ENGINE • ACTIVE
+              </span>
             </div>
 
             {/* Center: Animated Mouse Scroll Indicator */}
